@@ -3,22 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta name="description" content="聚友联机 - 多人联机游戏平台，支持多种游戏模式，随时随地和朋友一起玩！">
-  <meta name="keywords" content="联机游戏, 多人游戏, 网页游戏, 休闲游戏">
-  <meta name="author" content="聚友联机团队">
-  <meta name="theme-color" content="#6366F1">
+  <meta name="description" content="快乐养鸡场 - 多人实时互动养鸡平台，建设家园，探索世界！">
+  <meta name="keywords" content="养鸡, 多人游戏, 互动, 家园建设, 探险">
+  <meta name="author" content="快乐养鸡场团队">
+  <meta name="theme-color" content="#F59E0B">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   
-  <meta property="og:title" content="聚友联机 - 多人联机游戏平台">
-  <meta property="og:description" content="多人联机游戏平台，随时随地和朋友一起玩！">
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="zh_CN">
-  
-  <title>聚友联机 - 多人联机游戏平台</title>
+  <title>快乐养鸡场 - 多人实时互动养鸡平台</title>
   
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <script src="https://cdn.tailwindcss.com"></script>
   
@@ -27,20 +22,25 @@
       theme: {
         extend: {
           colors: {
-            primary: '#6366F1',
-            secondary: '#EC4899',
+            primary: '#F59E0B',
+            secondary: '#EF4444',
             success: '#10B981',
             warning: '#F59E0B',
             danger: '#EF4444',
-            background: '#FCF8EE',
-            dark: '#0F0F0F'
+            background: '#FFF8E7',
+            dark: '#1F1F1F',
+            chicken: '#FFA500',
+            coop: '#8B4513'
           },
           animation: {
             'fade-in': 'fadeIn 0.5s ease-in-out',
             'slide-up': 'slideUp 0.4s ease-out',
             'bounce-in': 'bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
             'pulse-slow': 'pulse 2s infinite',
-            'spin-slow': 'spin 3s linear infinite'
+            'float': 'float 3s ease-in-out infinite',
+            'wiggle': 'wiggle 0.5s ease-in-out',
+            'peck': 'peck 0.3s ease-in-out',
+            'walk': 'walk 1s ease-in-out infinite'
           }
         }
       }
@@ -49,13 +49,15 @@
   
   <style>
     :root {
-      --primary: #6366F1;
-      --secondary: #EC4899;
+      --primary: #F59E0B;
+      --secondary: #EF4444;
       --success: #10B981;
       --warning: #F59E0B;
       --danger: #EF4444;
-      --background: #FCF8EE;
-      --dark: #0F0F0F;
+      --background: #FFF8E7;
+      --dark: #1F1F1F;
+      --chicken: #FFA500;
+      --coop: #8B4513;
     }
     
     * {
@@ -76,24 +78,6 @@
       color: white;
     }
     
-    .dark-mode .card {
-      background: #1a1a1a;
-      border-color: #333;
-    }
-    
-    .dark-mode .text-gray-600,
-    .dark-mode .text-gray-700 {
-      color: #ccc;
-    }
-    
-    .dark-mode .bg-white {
-      background-color: #1a1a1a;
-    }
-    
-    .dark-mode .bg-gray-50 {
-      background-color: #262626;
-    }
-    
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -111,6 +95,27 @@
       100% { transform: scale(1); opacity: 1; }
     }
     
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-5deg); }
+      75% { transform: rotate(5deg); }
+    }
+    
+    @keyframes peck {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(15deg) translateY(5px); }
+    }
+    
+    @keyframes walk {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(10px); }
+    }
+    
     .card {
       transition: all 0.3s ease;
     }
@@ -120,47 +125,86 @@
       box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
     }
     
-    .pet-container {
-      animation: petFloat 3s ease-in-out infinite;
+    .chicken-avatar {
+      animation: float 3s ease-in-out infinite;
     }
     
-    @keyframes petFloat {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
+    .chicken-avatar:hover {
+      animation: wiggle 0.5s ease-in-out;
     }
     
-    .pet-happy {
-      animation: petHappy 0.5s ease-in-out;
+    .chicken-pecking {
+      animation: peck 0.3s ease-in-out;
     }
     
-    @keyframes petHappy {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.2); }
+    .chicken-walking {
+      animation: walk 1s ease-in-out infinite;
+    }
+    
+    .room-card {
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+    
+    .room-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      border-color: var(--primary);
+    }
+    
+    .room-card.active {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+    }
+    
+    .player-slot {
+      transition: all 0.3s ease;
+    }
+    
+    .player-slot.occupied {
+      background: rgba(245, 158, 11, 0.1);
+      border-color: var(--primary);
+    }
+    
+    .player-slot.empty {
+      background: rgba(0, 0, 0, 0.05);
+      border-style: dashed;
+    }
+    
+    .world-map {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .world-map::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+      animation: float 20s ease-in-out infinite;
+    }
+    
+    .coop-building {
+      transition: all 0.3s ease;
+    }
+    
+    .coop-building:hover {
+      transform: scale(1.05);
+    }
+    
+    .resource-bar {
+      transition: width 0.5s ease;
     }
     
     @media (max-width: 768px) {
-      .text-4xl {
-        font-size: 2.5rem;
-      }
-      
-      .text-3xl {
-        font-size: 2rem;
-      }
-      
-      button, .btn {
-        min-height: 48px;
-        touch-action: manipulation;
-      }
-      
-      .p-6 {
-        padding: 1rem;
-      }
-    }
-    
-    @media (min-width: 768px) and (max-width: 1024px) {
-      .container {
-        max-width: 90%;
-      }
+      .text-4xl { font-size: 2.5rem; }
+      .text-3xl { font-size: 2rem; }
+      button, .btn { min-height: 48px; touch-action: manipulation; }
+      .p-6 { padding: 1rem; }
     }
     
     @media (prefers-reduced-motion: reduce) {
@@ -176,190 +220,498 @@
       outline-offset: 2px;
     }
     
-    .room-card {
-      transition: all 0.3s ease;
+    .tooltip {
+      position: relative;
     }
     
-    .room-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    .tooltip::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
     }
     
-    .player-avatar {
-      transition: all 0.3s ease;
+    .tooltip:hover::after {
+      opacity: 1;
     }
     
-    .player-avatar:hover {
-      transform: scale(1.1);
+    .progress-ring {
+      transform: rotate(-90deg);
+    }
+    
+    .progress-ring-circle {
+      transition: stroke-dashoffset 0.35s;
     }
   </style>
 </head>
 <body>
   <div id="app" class="min-h-screen flex flex-col">
+    <!-- 导航栏 -->
+    <nav class="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-40">
+      <div class="container mx-auto px-4 py-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center text-2xl">
+              🐔
+            </div>
+            <h1 class="text-xl font-bold bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent">
+              快乐养鸡场
+            </h1>
+          </div>
+          
+          <div class="flex items-center gap-4">
+            <div class="hidden md:flex items-center gap-2 bg-gray-100 dark:bg-gray-700 rounded-full px-4 py-2">
+              <span class="text-sm text-gray-600 dark:text-gray-300">在线:</span>
+              <span id="online-count" class="text-sm font-bold text-primary">1,234</span>
+            </div>
+            
+            <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center transition" aria-label="切换深色模式">
+              <i class="fas fa-moon dark:hidden"></i>
+              <i class="fas fa-sun hidden dark:block text-yellow-400"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+    
     <!-- 首页 -->
     <section id="home-page" class="flex-1 fade-in">
-      <header class="py-6 px-4">
-        <div class="container mx-auto text-center">
-          <h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary via-purple-500 to-secondary bg-clip-text text-transparent">
-            🎮 聚友联机
-          </h1>
-          <p class="text-lg mt-3 text-gray-600 dark:text-gray-300">
-            多人联机游戏平台，随时随地和朋友一起玩！
-          </p>
-        </div>
-      </header>
-      
-      <main class="container mx-auto px-4 py-8">
-        <!-- 联机房间系统 -->
-        <div id="room-system" class="mb-8">
-          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
-            <h2 class="text-2xl font-bold mb-4 text-center">🏠 游戏房间</h2>
-            
-            <div id="room-login" class="text-center">
-              <div class="mb-4">
-                <input type="text" id="player-name" placeholder="输入你的昵称" 
-                       class="px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-lg w-full max-w-md dark:bg-gray-700">
-              </div>
-              
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-md mx-auto">
-                <button onclick="createRoom()" class="px-6 py-4 bg-primary text-white rounded-xl text-lg font-bold hover:bg-primary/90 transition">
-                  <i class="fas fa-plus-circle mr-2"></i>创建房间
-                </button>
-                <button onclick="showJoinRoom()" class="px-6 py-4 bg-secondary text-white rounded-xl text-lg font-bold hover:bg-secondary/90 transition">
-                  <i class="fas fa-sign-in-alt mr-2"></i>加入房间
-                </button>
-              </div>
-            </div>
-            
-            <div id="join-room-form" class="hidden text-center mt-4">
-              <input type="text" id="room-code" placeholder="输入房间号（6位数字）" 
-                     class="px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-lg w-full max-w-md mb-4 dark:bg-gray-700">
-              <div class="flex gap-4 justify-center">
-                <button onclick="joinRoom()" class="px-6 py-3 bg-success text-white rounded-lg font-bold">
-                  确认加入
-                </button>
-                <button onclick="hideJoinRoom()" class="px-6 py-3 bg-gray-200 dark:bg-gray-700 rounded-lg">
-                  取消
-                </button>
-              </div>
-            </div>
-            
-            <div id="room-info" class="hidden mt-4">
-              <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-4">
-                <div class="flex justify-between items-center mb-4">
-                  <div>
-                    <span class="text-gray-600 dark:text-gray-300">房间号：</span>
-                    <span id="current-room-code" class="text-2xl font-bold text-primary"></span>
-                  </div>
-                  <button onclick="leaveRoom()" class="px-4 py-2 bg-danger text-white rounded-lg text-sm">
-                    退出房间
-                  </button>
-                </div>
-                
-                <div id="players-list" class="flex gap-4 justify-center flex-wrap">
-                  <!-- 玩家列表将在这里显示 -->
-                </div>
-                
-                <div class="mt-4 text-center">
-                  <button onclick="startMultiplayerGame()" id="start-game-btn" class="px-8 py-4 bg-success text-white rounded-xl text-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed">
-                    开始游戏
-                  </button>
-                  <p id="waiting-text" class="mt-2 text-gray-500">等待其他玩家加入...</p>
-                </div>
-              </div>
-            </div>
-          </div>
+      <main class="container mx-auto px-4 py-6">
+        <!-- 欢迎区域 -->
+        <div class="text-center mb-8">
+          <div class="inline-block chicken-avatar text-8xl mb-4">🐔</div>
+          <h2 class="text-3xl md:text-4xl font-bold mb-2">欢迎来到快乐养鸡场！</h2>
+          <p class="text-lg text-gray-600 dark:text-gray-300">建设家园，养育鸡群，探索大世界！</p>
         </div>
         
-        <!-- 宠物互动区域 -->
-        <div id="pet-area" class="mb-8 text-center">
-          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
-            <h2 class="text-2xl font-bold mb-4">🐾 萌宠互动</h2>
-            <div id="pet-container" class="pet-container inline-block cursor-pointer" onclick="interactWithPet()">
-              <div class="text-8xl mb-2">🐱</div>
-              <div id="pet-happiness" class="text-lg text-gray-600 dark:text-gray-300">
-                快乐值: <span id="happiness-value">50</span>/100
-              </div>
+        <!-- 快速操作 -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <button onclick="showSection('coop')" class="card bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 text-center hover:bg-yellow-50 dark:hover:bg-gray-700 transition">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center mx-auto mb-3">
+              <i class="fas fa-home text-2xl text-white"></i>
             </div>
-            <p class="mt-4 text-gray-500">点击宠物和它互动！多人同时点击效果更佳！</p>
-          </div>
-        </div>
-        
-        <h2 class="text-2xl font-bold mb-6 text-center">🎯 选择游戏模式</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          <div class="card bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer" onclick="selectMode('free')" role="button" tabindex="0" aria-label="自由模式">
-            <div class="h-2 bg-gradient-to-r from-blue-500 to-blue-600"></div>
-            <div class="p-6">
-              <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center mb-4 mx-auto">
-                <i class="fas fa-gamepad text-3xl text-white"></i>
-              </div>
-              <h3 class="text-xl font-bold text-center mb-2">自由模式</h3>
-              <p class="text-gray-600 text-center dark:text-gray-300">自由选择想玩的游戏</p>
-            </div>
-          </div>
+            <h3 class="font-bold">我的鸡舍</h3>
+            <p class="text-sm text-gray-500 mt-1">管理你的鸡群</p>
+          </button>
           
-          <div class="card bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer" onclick="selectMode('challenge')" role="button" tabindex="0" aria-label="闯关模式">
-            <div class="h-2 bg-gradient-to-r from-yellow-500 to-orange-500"></div>
-            <div class="p-6">
-              <div class="w-16 h-16 rounded-full bg-gradient-to-r from-yellow-500 to-orange-500 flex items-center justify-center mb-4 mx-auto">
-                <i class="fas fa-trophy text-3xl text-white"></i>
-              </div>
-              <h3 class="text-xl font-bold text-center mb-2">闯关模式</h3>
-              <p class="text-gray-600 text-center dark:text-gray-300">挑战不同类型，解锁成就</p>
+          <button onclick="showSection('world')" class="card bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 text-center hover:bg-green-50 dark:hover:bg-gray-700 transition">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-r from-green-400 to-teal-500 flex items-center justify-center mx-auto mb-3">
+              <i class="fas fa-globe text-2xl text-white"></i>
             </div>
-          </div>
+            <h3 class="font-bold">大世界</h3>
+            <p class="text-sm text-gray-500 mt-1">探索广阔世界</p>
+          </button>
           
-          <div class="card bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer" onclick="selectMode('random')" role="button" tabindex="0" aria-label="随机挑战">
-            <div class="h-2 bg-gradient-to-r from-purple-500 to-pink-500"></div>
-            <div class="p-6">
-              <div class="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center mb-4 mx-auto">
-                <i class="fas fa-dice text-3xl text-white"></i>
-              </div>
-              <h3 class="text-xl font-bold text-center mb-2">随机挑战</h3>
-              <p class="text-gray-600 text-center dark:text-gray-300">紧张刺激的随机游戏</p>
+          <button onclick="showSection('rooms')" class="card bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 text-center hover:bg-blue-50 dark:hover:bg-gray-700 transition">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-400 to-indigo-500 flex items-center justify-center mx-auto mb-3">
+              <i class="fas fa-users text-2xl text-white"></i>
             </div>
-          </div>
+            <h3 class="font-bold">房间大厅</h3>
+            <p class="text-sm text-gray-500 mt-1">加入或创建房间</p>
+          </button>
           
-          <div class="card bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer" onclick="selectMode('tournament')" role="button" tabindex="0" aria-label="循环赛">
-            <div class="h-2 bg-gradient-to-r from-green-500 to-teal-500"></div>
-            <div class="p-6">
-              <div class="w-16 h-16 rounded-full bg-gradient-to-r from-green-500 to-teal-500 flex items-center justify-center mb-4 mx-auto">
-                <i class="fas fa-medal text-3xl text-white"></i>
-              </div>
-              <h3 class="text-xl font-bold text-center mb-2">循环赛</h3>
-              <p class="text-gray-600 text-center dark:text-gray-300">积分累计，最终排名</p>
+          <button onclick="showSection('wheel')" class="card bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 text-center hover:bg-purple-50 dark:hover:bg-gray-700 transition">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center mx-auto mb-3">
+              <i class="fas fa-dharmachakra text-2xl text-white"></i>
             </div>
-          </div>
-        </div>
-        
-        <div class="mt-8 text-center">
-          <button onclick="toggleDarkMode()" class="px-6 py-3 bg-gray-200 dark:bg-gray-700 rounded-lg transition" aria-label="切换深色模式">
-            <i class="fas fa-moon dark:hidden"></i>
-            <i class="fas fa-sun hidden dark:block"></i>
+            <h3 class="font-bold">幸运转盘</h3>
+            <p class="text-sm text-gray-500 mt-1">赢取丰厚奖励</p>
           </button>
         </div>
+        
+        <!-- 资源状态 -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-8">
+          <h3 class="text-xl font-bold mb-4">📊 资源状态</h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="text-center">
+              <div class="text-3xl mb-1">🌾</div>
+              <div class="text-sm text-gray-500">饲料</div>
+              <div id="resource-feed" class="text-xl font-bold text-primary">1,250</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl mb-1">🥚</div>
+              <div class="text-sm text-gray-500">鸡蛋</div>
+              <div id="resource-eggs" class="text-xl font-bold text-warning">89</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl mb-1">💰</div>
+              <div class="text-sm text-gray-500">金币</div>
+              <div id="resource-coins" class="text-xl font-bold text-success">5,680</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl mb-1">⭐</div>
+              <div class="text-sm text-gray-500">经验</div>
+              <div id="resource-exp" class="text-xl font-bold text-secondary">2,340</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 我的鸡群 -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-8">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold">🐔 我的鸡群</h3>
+            <span id="chicken-count" class="text-sm text-gray-500">5/20</span>
+          </div>
+          <div id="chicken-list" class="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-4">
+            <!-- 鸡只列表将在这里显示 -->
+          </div>
+        </div>
       </main>
-      
-      <footer class="py-6 text-center text-sm text-gray-500">
-        <p>支持手机、平板、电脑 📱💻🖥️</p>
-        <p class="mt-2">© 2026 聚友联机游戏平台</p>
-      </footer>
     </section>
     
-    <!-- 游戏页面 -->
-    <section id="game-page" class="hidden flex-1">
-      <header class="bg-white dark:bg-gray-800 shadow-md py-4 px-4">
-        <div class="container mx-auto flex items-center justify-between">
-          <button onclick="exitGame()" class="text-gray-600 dark:text-gray-300 hover:text-primary transition" aria-label="返回主页">
+    <!-- 房间大厅 -->
+    <section id="rooms-page" class="hidden flex-1">
+      <div class="container mx-auto px-4 py-6">
+        <div class="flex items-center gap-4 mb-6">
+          <button onclick="showSection('home')" class="text-gray-600 dark:text-gray-300 hover:text-primary transition">
             <i class="fas fa-arrow-left text-xl"></i>
           </button>
-          <h2 id="game-title" class="text-xl font-bold">游戏</h2>
-          <div id="game-score" class="text-primary font-bold">0分</div>
+          <h2 class="text-2xl font-bold">🏠 房间大厅</h2>
         </div>
-      </header>
-      
-      <main id="game-content" class="container mx-auto px-4 py-6">
-      </main>
+        
+        <!-- 房间操作 -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
+          <div class="flex flex-col md:flex-row gap-4">
+            <div class="flex-1">
+              <input type="text" id="player-name" placeholder="输入你的昵称" 
+                     class="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 focus:border-primary focus:outline-none">
+            </div>
+            <div class="flex gap-2">
+              <button onclick="createRoom()" class="px-6 py-3 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 transition">
+                <i class="fas fa-plus mr-2"></i>创建房间
+              </button>
+              <button onclick="showJoinRoom()" class="px-6 py-3 bg-secondary text-white rounded-lg font-bold hover:bg-secondary/90 transition">
+                <i class="fas fa-sign-in-alt mr-2"></i>加入房间
+              </button>
+            </div>
+          </div>
+          
+          <!-- 加入房间表单 -->
+          <div id="join-room-form" class="hidden mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <div class="flex gap-4">
+              <input type="text" id="room-code" placeholder="输入房间号（如：CH7X9K）" 
+                     class="flex-1 px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700">
+              <button onclick="joinRoom()" class="px-6 py-3 bg-success text-white rounded-lg font-bold">
+                确认加入
+              </button>
+              <button onclick="hideJoinRoom()" class="px-4 py-3 bg-gray-200 dark:bg-gray-700 rounded-lg">
+                取消
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 房间列表 -->
+        <div id="room-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- 房间列表将在这里显示 -->
+        </div>
+        
+        <!-- 当前房间信息 -->
+        <div id="current-room-info" class="hidden mt-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="text-xl font-bold">当前房间</h3>
+              <p class="text-sm text-gray-500">房间号: <span id="current-room-code" class="font-mono text-primary"></span></p>
+            </div>
+            <button onclick="leaveRoom()" class="px-4 py-2 bg-danger text-white rounded-lg text-sm hover:bg-danger/90 transition">
+              退出房间
+            </button>
+          </div>
+          
+          <!-- 玩家槽位 -->
+          <div id="player-slots" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-4">
+            <!-- 玩家槽位将在这里显示 -->
+          </div>
+          
+          <!-- 房间设置 -->
+          <div id="room-settings" class="hidden border-t border-gray-200 dark:border-gray-600 pt-4">
+            <h4 class="font-bold mb-3">房间设置</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-sm text-gray-600 dark:text-gray-300 mb-2">房间名称</label>
+                <input type="text" id="room-name" placeholder="我的养鸡房" 
+                       class="w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600">
+              </div>
+              <div>
+                <label class="block text-sm text-gray-600 dark:text-gray-300 mb-2">最大人数</label>
+                <select id="room-max-players" class="w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600">
+                  <option value="3">3人</option>
+                  <option value="5">5人</option>
+                  <option value="10">10人</option>
+                  <option value="20">20人</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm text-gray-600 dark:text-gray-300 mb-2">房间类型</label>
+                <select id="room-type" class="w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600">
+                  <option value="public">公共房间</option>
+                  <option value="private">私人房间</option>
+                </select>
+              </div>
+            </div>
+            <button onclick="saveRoomSettings()" class="mt-4 px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition">
+              保存设置
+            </button>
+          </div>
+          
+          <!-- 开始游戏按钮 -->
+          <div class="text-center mt-4">
+            <button onclick="startRoomGame()" id="start-room-game-btn" 
+                    class="px-8 py-4 bg-success text-white rounded-xl text-lg font-bold hover:bg-success/90 transition disabled:opacity-50 disabled:cursor-not-allowed">
+              开始游戏
+            </button>
+            <p id="waiting-text" class="mt-2 text-gray-500">等待其他玩家加入...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 我的鸡舍 -->
+    <section id="coop-page" class="hidden flex-1">
+      <div class="container mx-auto px-4 py-6">
+        <div class="flex items-center gap-4 mb-6">
+          <button onclick="showSection('home')" class="text-gray-600 dark:text-gray-300 hover:text-primary transition">
+            <i class="fas fa-arrow-left text-xl"></i>
+          </button>
+          <h2 class="text-2xl font-bold">🏠 我的鸡舍</h2>
+        </div>
+        
+        <!-- 鸡舍视图 -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
+          <div id="coop-view" class="relative h-96 bg-gradient-to-b from-sky-200 to-green-200 rounded-xl overflow-hidden">
+            <!-- 背景元素 -->
+            <div class="absolute top-4 left-4 text-4xl">☀️</div>
+            <div class="absolute top-8 right-8 text-2xl">☁️</div>
+            <div class="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-green-400 to-green-300"></div>
+            
+            <!-- 鸡舍建筑 -->
+            <div class="absolute bottom-16 left-1/2 transform -translate-x-1/2">
+              <div class="coop-building text-6xl cursor-pointer" onclick="interactWithCoop()">🏠</div>
+              <div class="text-center text-sm text-gray-600 mt-1">鸡舍</div>
+            </div>
+            
+            <!-- 鸡群 -->
+            <div id="coop-chickens" class="absolute inset-0">
+              <!-- 鸡只将在这里显示 -->
+            </div>
+            
+            <!-- 互动提示 -->
+            <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white/80 dark:bg-black/80 rounded-full px-4 py-2 text-sm">
+              点击鸡只进行互动 | 点击鸡舍查看详情
+            </div>
+          </div>
+        </div>
+        
+        <!-- 鸡只管理 -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
+          <h3 class="text-xl font-bold mb-4">🐔 鸡只管理</h3>
+          <div id="coop-chicken-list" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <!-- 鸡只列表将在这里显示 -->
+          </div>
+        </div>
+        
+        <!-- 家园建设 -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+          <h3 class="text-xl font-bold mb-4">🏗️ 家园建设</h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <button onclick="buildStructure('fence')" class="p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl hover:border-primary hover:bg-yellow-50 dark:hover:bg-gray-700 transition">
+              <div class="text-3xl mb-2">🚧</div>
+              <div class="font-bold">围栏</div>
+              <div class="text-sm text-gray-500">100金币</div>
+            </button>
+            <button onclick="buildStructure('pond')" class="p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl hover:border-primary hover:bg-blue-50 dark:hover:bg-gray-700 transition">
+              <div class="text-3xl mb-2">🏊</div>
+              <div class="font-bold">池塘</div>
+              <div class="text-sm text-gray-500">300金币</div>
+            </button>
+            <button onclick="buildStructure('garden')" class="p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl hover:border-primary hover:bg-green-50 dark:hover:bg-gray-700 transition">
+              <div class="text-3xl mb-2">🌻</div>
+              <div class="font-bold">花园</div>
+              <div class="text-sm text-gray-500">200金币</div>
+            </button>
+            <button onclick="buildStructure('barn')" class="p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl hover:border-primary hover:bg-orange-50 dark:hover:bg-gray-700 transition">
+              <div class="text-3xl mb-2">🏚️</div>
+              <div class="font-bold">谷仓</div>
+              <div class="text-sm text-gray-500">500金币</div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 大世界 -->
+    <section id="world-page" class="hidden flex-1">
+      <div class="container mx-auto px-4 py-6">
+        <div class="flex items-center gap-4 mb-6">
+          <button onclick="showSection('home')" class="text-gray-600 dark:text-gray-300 hover:text-primary transition">
+            <i class="fas fa-arrow-left text-xl"></i>
+          </button>
+          <h2 class="text-2xl font-bold">🌍 大世界</h2>
+        </div>
+        
+        <!-- 世界地图 -->
+        <div class="world-map rounded-2xl shadow-lg p-6 mb-6 min-h-[500px]">
+          <div class="relative h-full">
+            <!-- 地图区域 -->
+            <div id="world-areas" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div class="bg-white/10 backdrop-blur rounded-xl p-6 text-center text-white cursor-pointer hover:bg-white/20 transition" onclick="exploreArea('meadow')">
+                <div class="text-4xl mb-2">🌾</div>
+                <div class="font-bold">青青草原</div>
+                <div class="text-sm opacity-80">适合放牧</div>
+              </div>
+              <div class="bg-white/10 backdrop-blur rounded-xl p-6 text-center text-white cursor-pointer hover:bg-white/20 transition" onclick="exploreArea('forest')">
+                <div class="text-4xl mb-2">🌲</div>
+                <div class="font-bold">神秘森林</div>
+                <div class="text-sm opacity-80">寻找珍稀品种</div>
+              </div>
+              <div class="bg-white/10 backdrop-blur rounded-xl p-6 text-center text-white cursor-pointer hover:bg-white/20 transition" onclick="exploreArea('mountain')">
+                <div class="text-4xl mb-2">⛰️</div>
+                <div class="font-bold">高山牧场</div>
+                <div class="text-sm opacity-80">高难度挑战</div>
+              </div>
+              <div class="bg-white/10 backdrop-blur rounded-xl p-6 text-center text-white cursor-pointer hover:bg-white/20 transition" onclick="exploreArea('desert')">
+                <div class="text-4xl mb-2">🏜️</div>
+                <div class="font-bold">沙漠绿洲</div>
+                <div class="text-sm opacity-80">稀有资源</div>
+              </div>
+            </div>
+            
+            <!-- 实时协作提示 -->
+            <div class="absolute bottom-4 left-4 right-4 bg-white/90 dark:bg-black/90 rounded-xl p-4">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                  <span class="text-sm font-bold">实时协作中</span>
+                </div>
+                <div class="flex -space-x-2">
+                  <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-xs border-2 border-white">A</div>
+                  <div class="w-8 h-8 rounded-full bg-secondary text-white flex items-center justify-center text-xs border-2 border-white">B</div>
+                  <div class="w-8 h-8 rounded-full bg-success text-white flex items-center justify-center text-xs border-2 border-white">C</div>
+                  <div class="w-8 h-8 rounded-full bg-gray-400 text-white flex items-center justify-center text-xs border-2 border-white">+7</div>
+                </div>
+              </div>
+              <div class="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                当前有 <span class="font-bold text-primary">10</span> 位玩家正在共同建设这片区域
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 探险日志 -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+          <h3 class="text-xl font-bold mb-4">📖 探险日志</h3>
+          <div id="explore-logs" class="space-y-3">
+            <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center">🐔</div>
+              <div class="flex-1">
+                <div class="font-bold">发现新品种！</div>
+                <div class="text-sm text-gray-500">在神秘森林发现了金色羽毛鸡</div>
+              </div>
+              <div class="text-sm text-gray-400">2分钟前</div>
+            </div>
+            <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <div class="w-10 h-10 rounded-full bg-success text-white flex items-center justify-center">🌳</div>
+              <div class="flex-1">
+                <div class="font-bold">共同植树</div>
+                <div class="text-sm text-gray-500">你和朋友们一起种植了10棵果树</div>
+              </div>
+              <div class="text-sm text-gray-400">5分钟前</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 幸运转盘 -->
+    <section id="wheel-page" class="hidden flex-1">
+      <div class="container mx-auto px-4 py-6">
+        <div class="flex items-center gap-4 mb-6">
+          <button onclick="showSection('home')" class="text-gray-600 dark:text-gray-300 hover:text-primary transition">
+            <i class="fas fa-arrow-left text-xl"></i>
+          </button>
+          <h2 class="text-2xl font-bold">🎰 幸运转盘</h2>
+        </div>
+        
+        <div class="max-w-2xl mx-auto">
+          <!-- 转盘 -->
+          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 mb-6">
+            <div class="relative w-80 h-80 mx-auto">
+              <div id="fortune-wheel" class="w-full h-full rounded-full border-8 border-primary transition-transform duration-[5000ms] ease-out"
+                   style="background: conic-gradient(
+                     #EF4444 0deg 60deg,
+                     #3B82F6 60deg 120deg,
+                     #10B981 120deg 180deg,
+                     #F59E0B 180deg 240deg,
+                     #8B5CF6 240deg 300deg,
+                     #EC4899 300deg 360deg
+                   );">
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="w-20 h-20 bg-white dark:bg-gray-800 rounded-full shadow-lg flex items-center justify-center text-3xl">
+                    🎰
+                  </div>
+                </div>
+              </div>
+              <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-4">
+                <div class="w-0 h-0 border-l-4 border-r-4 border-t-8 border-l-transparent border-r-transparent border-t-primary"></div>
+              </div>
+            </div>
+            
+            <div class="text-center mt-6">
+              <button onclick="spinWheel()" id="spin-btn" 
+                      class="px-8 py-4 bg-primary text-white rounded-xl text-2xl font-bold hover:bg-primary/90 transition disabled:opacity-50">
+                🎰 转动转盘
+              </button>
+            </div>
+          </div>
+          
+          <!-- 奖品列表 -->
+          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+            <h3 class="text-xl font-bold mb-4">🎁 奖品列表</h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div class="text-center p-4 bg-red-50 dark:bg-red-900/30 rounded-lg">
+                <div class="text-3xl mb-2">🌾</div>
+                <div class="font-bold">高级饲料</div>
+                <div class="text-sm text-gray-500">x50</div>
+              </div>
+              <div class="text-center p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
+                <div class="text-3xl mb-2">💰</div>
+                <div class="font-bold">金币</div>
+                <div class="text-sm text-gray-500">x1000</div>
+              </div>
+              <div class="text-center p-4 bg-green-50 dark:bg-green-900/30 rounded-lg">
+                <div class="text-3xl mb-2">🥚</div>
+                <div class="font-bold">金蛋</div>
+                <div class="text-sm text-gray-500">x10</div>
+              </div>
+              <div class="text-center p-4 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg">
+                <div class="text-3xl mb-2">⭐</div>
+                <div class="font-bold">经验值</div>
+                <div class="text-sm text-gray-500">x500</div>
+              </div>
+              <div class="text-center p-4 bg-purple-50 dark:bg-purple-900/30 rounded-lg">
+                <div class="text-3xl mb-2">🐔</div>
+                <div class="font-bold">稀有鸡</div>
+                <div class="text-sm text-gray-500">x1</div>
+              </div>
+              <div class="text-center p-4 bg-pink-50 dark:bg-pink-900/30 rounded-lg">
+                <div class="text-3xl mb-2">🎊</div>
+                <div class="font-bold">神秘大奖</div>
+                <div class="text-sm text-gray-500">???</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   </div>
   
@@ -378,7 +730,8 @@
         countdown: { freq: 1000, type: 'square', duration: 0.1 },
         victory: { freq: 784, type: 'triangle', duration: 0.5 },
         tick: { freq: 600, type: 'triangle', duration: 0.05 },
-        complete: { freq: 880, type: 'sine', duration: 0.4 }
+        complete: { freq: 880, type: 'sine', duration: 0.4 },
+        chicken: { freq: 400, type: 'sine', duration: 0.2 }
       },
       
       init() {
@@ -417,239 +770,322 @@
       }
     };
     
-    // ==================== 游戏引擎 ====================
-    const GameEngine = {
-      state: {
-        mode: null,
-        currentGame: null,
-        players: [
-          { id: 1, name: '玩家1', score: 0, avatar: 1, isHost: true },
-          { id: 2, name: '玩家2', score: 0, avatar: 2, isHost: false },
-          { id: 3, name: '玩家3', score: 0, avatar: 3, isHost: false }
-        ],
-        currentRound: 0,
-        totalRounds: 5,
-        timer: 0,
-        phase: 'waiting'
+    // ==================== 游戏状态管理 ====================
+    const GameState = {
+      player: {
+        name: '',
+        coins: 5680,
+        feed: 1250,
+        eggs: 89,
+        exp: 2340,
+        level: 5
       },
-      
-      init() {
-        this.loadSettings();
-        this.setupEventListeners();
-      },
-      
-      loadSettings() {
-        const settings = localStorage.getItem('gameSettings');
-        if (settings) {
-          const parsed = JSON.parse(settings);
-          if (parsed.darkMode) {
-            document.body.classList.add('dark-mode');
-          }
-        }
-      },
-      
-      setupEventListeners() {
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape') {
-            if (document.getElementById('game-modal')) {
-              closeModal();
-            } else if (!document.getElementById('home-page').classList.contains('hidden')) {
-            } else {
-              this.exitCurrentScreen();
-            }
-          }
-        });
-        
-        document.addEventListener('mousedown', () => {
-          document.body.classList.remove('keyboard-nav');
-        });
-        
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Tab') {
-            document.body.classList.add('keyboard-nav');
-          }
-        });
-      },
-      
-      startGame(mode, gameId) {
-        this.state.mode = mode;
-        this.state.currentGame = gameId;
-        this.state.phase = 'playing';
-        this.showGameScreen();
-        this.loadGame(gameId);
-      },
-      
-      showGameScreen() {
-        document.getElementById('home-page').classList.add('hidden');
-        document.getElementById('game-page').classList.remove('hidden');
-      },
-      
-      loadGame(gameId) {
-        const game = GameLibrary.get(gameId);
-        if (game) {
-          document.getElementById('game-title').textContent = game.name;
-          const gameContent = document.getElementById('game-content');
-          gameContent.innerHTML = game.render();
-          game.init();
-        }
-      },
-      
-      exitCurrentScreen() {
-        document.getElementById('game-page').classList.add('hidden');
-        document.getElementById('home-page').classList.remove('hidden');
-      },
-      
-      updateScore(points) {
-        this.state.players[0].score += points;
-        document.getElementById('game-score').textContent = this.state.players[0].score + '分';
-      }
-    };
-    
-    // ==================== 游戏库 ====================
-    const GameLibrary = {
-      games: new Map(),
-      
-      register(id, game) {
-        this.games.set(id, game);
-      },
-      
-      get(id) {
-        return this.games.get(id);
-      },
-      
-      getAll() {
-        return Array.from(this.games.values());
-      }
+      chickens: [
+        { id: 1, name: '小黄', type: '普通', emoji: '🐔', happiness: 80, hunger: 60, level: 3 },
+        { id: 2, name: '小白', type: '白羽', emoji: '🐓', happiness: 90, hunger: 70, level: 2 },
+        { id: 3, name: '小黑', type: '黑羽', emoji: '🦃', happiness: 75, hunger: 50, level: 4 },
+        { id: 4, name: '小花', type: '花斑', emoji: '🐤', happiness: 85, hunger: 80, level: 1 },
+        { id: 5, name: '小金', type: '金色', emoji: '🐥', happiness: 95, hunger: 90, level: 5 }
+      ],
+      buildings: [],
+      currentRoom: null,
+      onlineCount: 1234
     };
     
     // ==================== 房间系统 ====================
     const RoomSystem = {
+      rooms: [],
       currentRoom: null,
-      playerName: '',
-      isHost: false,
       
       generateRoomCode() {
-        return Math.floor(100000 + Math.random() * 900000).toString();
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        let code = '';
+        for (let i = 0; i < 6; i++) {
+          code += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return code;
       },
       
-      createRoom(playerName) {
-        this.playerName = playerName;
-        this.isHost = true;
-        this.currentRoom = {
+      createRoom(playerName, settings = {}) {
+        const room = {
           code: this.generateRoomCode(),
-          players: [{ name: playerName, isHost: true, id: 1 }],
-          status: 'waiting'
+          name: settings.name || `${playerName}的养鸡场`,
+          host: playerName,
+          players: [{ name: playerName, isHost: true }],
+          maxPlayers: settings.maxPlayers || 10,
+          type: settings.type || 'public',
+          status: 'waiting',
+          createdAt: new Date()
         };
-        this.updateRoomUI();
-        return this.currentRoom;
+        
+        this.rooms.push(room);
+        this.currentRoom = room;
+        return room;
       },
       
       joinRoom(roomCode, playerName) {
-        this.playerName = playerName;
-        this.isHost = false;
-        this.currentRoom = {
-          code: roomCode,
-          players: [
-            { name: '房主', isHost: true, id: 1 },
-            { name: playerName, isHost: false, id: 2 }
-          ],
-          status: 'waiting'
-        };
-        this.updateRoomUI();
-        return this.currentRoom;
+        const room = this.rooms.find(r => r.code === roomCode);
+        if (!room) {
+          alert('房间不存在！');
+          return null;
+        }
+        
+        if (room.players.length >= room.maxPlayers) {
+          alert('房间已满！');
+          return null;
+        }
+        
+        room.players.push({ name: playerName, isHost: false });
+        this.currentRoom = room;
+        return room;
       },
       
       leaveRoom() {
+        if (this.currentRoom) {
+          const index = this.rooms.findIndex(r => r.code === this.currentRoom.code);
+          if (index > -1) {
+            this.rooms.splice(index, 1);
+          }
+        }
         this.currentRoom = null;
-        this.isHost = false;
-        this.updateRoomUI();
       },
       
-      updateRoomUI() {
-        const roomLogin = document.getElementById('room-login');
-        const joinRoomForm = document.getElementById('join-room-form');
-        const roomInfo = document.getElementById('room-info');
-        
-        if (this.currentRoom) {
-          roomLogin.classList.add('hidden');
-          joinRoomForm.classList.add('hidden');
-          roomInfo.classList.remove('hidden');
-          
-          document.getElementById('current-room-code').textContent = this.currentRoom.code;
-          
-          const playersList = document.getElementById('players-list');
-          playersList.innerHTML = this.currentRoom.players.map((player, index) => `
-            <div class="player-avatar flex flex-col items-center">
-              <div class="w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white text-xl font-bold">
-                ${player.name.charAt(0)}
-              </div>
-              <span class="text-sm mt-1 ${player.isHost ? 'text-primary font-bold' : ''}">${player.name} ${player.isHost ? '(房主)' : ''}</span>
-            </div>
-          `).join('');
-          
-          const startBtn = document.getElementById('start-game-btn');
-          const waitingText = document.getElementById('waiting-text');
-          
-          if (this.isHost) {
-            startBtn.disabled = false;
-            startBtn.classList.remove('hidden');
-            waitingText.classList.add('hidden');
-          } else {
-            startBtn.classList.add('hidden');
-            waitingText.classList.remove('hidden');
-            waitingText.textContent = '等待房主开始游戏...';
-          }
-        } else {
-          roomLogin.classList.remove('hidden');
-          joinRoomForm.classList.add('hidden');
-          roomInfo.classList.add('hidden');
-        }
+      getPublicRooms() {
+        return this.rooms.filter(r => r.type === 'public' && r.status === 'waiting');
       }
     };
     
-    // ==================== 宠物系统 ====================
-    const PetSystem = {
-      happiness: 50,
-      pets: ['🐱', '🐶', '🐰', '🐼', '🦊', '🐨', '🐯', '🦁'],
-      currentPet: 0,
+    // ==================== 鸡只系统 ====================
+    const ChickenSystem = {
+      chickens: GameState.chickens,
+      
+      renderChickenList() {
+        const container = document.getElementById('chicken-list');
+        if (!container) return;
+        
+        container.innerHTML = this.chickens.map(chicken => `
+          <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 text-center cursor-pointer hover:bg-yellow-50 dark:hover:bg-gray-600 transition"
+               onclick="interactWithChicken(${chicken.id})">
+            <div class="text-4xl mb-2 chicken-avatar">${chicken.emoji}</div>
+            <div class="font-bold text-sm">${chicken.name}</div>
+            <div class="text-xs text-gray-500">${chicken.type}</div>
+            <div class="mt-2">
+              <div class="text-xs text-gray-400">快乐值</div>
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="bg-yellow-400 h-2 rounded-full" style="width: ${chicken.happiness}%"></div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      },
+      
+      renderCoopChickens() {
+        const container = document.getElementById('coop-chickens');
+        if (!container) return;
+        
+        container.innerHTML = this.chickens.map((chicken, index) => {
+          const x = 20 + (index * 15) + Math.random() * 10;
+          const y = 30 + Math.random() * 40;
+          return `
+            <div class="absolute text-4xl cursor-pointer chicken-avatar"
+                 style="left: ${x}%; top: ${y}%;"
+                 onclick="interactWithChicken(${chicken.id})">
+              ${chicken.emoji}
+            </div>
+          `;
+        }).join('');
+      },
+      
+      interact(id) {
+        const chicken = this.chickens.find(c => c.id === id);
+        if (!chicken) return;
+        
+        chicken.happiness = Math.min(100, chicken.happiness + 10);
+        chicken.hunger = Math.max(0, chicken.hunger - 5);
+        
+        AudioManager.play('chicken');
+        
+        // 显示互动效果
+        const event = new CustomEvent('chicken-interact', { detail: { chicken } });
+        document.dispatchEvent(event);
+        
+        this.renderChickenList();
+        this.renderCoopChickens();
+      }
+    };
+    
+    // ==================== 转盘系统 ====================
+    const WheelSystem = {
+      prizes: [
+        { name: '高级饲料', icon: '🌾', amount: 50, color: '#EF4444' },
+        { name: '金币', icon: '💰', amount: 1000, color: '#3B82F6' },
+        { name: '金蛋', icon: '🥚', amount: 10, color: '#10B981' },
+        { name: '经验值', icon: '⭐', amount: 500, color: '#F59E0B' },
+        { name: '稀有鸡', icon: '🐔', amount: 1, color: '#8B5CF6' },
+        { name: '神秘大奖', icon: '🎊', amount: 1, color: '#EC4899' }
+      ],
+      isSpinning: false,
+      
+      spin() {
+        if (this.isSpinning) return;
+        this.isSpinning = true;
+        
+        const btn = document.getElementById('spin-btn');
+        btn.disabled = true;
+        
+        const wheel = document.getElementById('fortune-wheel');
+        const randomDeg = 1800 + Math.random() * 1800;
+        wheel.style.transform = `rotate(${randomDeg}deg)`;
+        
+        AudioManager.play('tick');
+        
+        setTimeout(() => {
+          const actualDeg = randomDeg % 360;
+          const segment = Math.floor(actualDeg / 60);
+          const prize = this.prizes[segment % this.prizes.length];
+          
+          this.showPrize(prize);
+          AudioManager.play('complete');
+          this.isSpinning = false;
+          btn.disabled = false;
+        }, 5000);
+      },
+      
+      showPrize(prize) {
+        AudioManager.play('victory');
+        alert(`🎉 恭喜你获得了：${prize.icon} ${prize.name} x${prize.amount}！`);
+        
+        // 更新资源
+        switch(prize.name) {
+          case '高级饲料':
+            GameState.player.feed += prize.amount;
+            break;
+          case '金币':
+            GameState.player.coins += prize.amount;
+            break;
+          case '金蛋':
+            GameState.player.eggs += prize.amount;
+            break;
+          case '经验值':
+            GameState.player.exp += prize.amount;
+            break;
+        }
+        
+        updateResourceDisplay();
+      }
+    };
+    
+    // ==================== 家园建设系统 ====================
+    const BuildSystem = {
+      structures: {
+        fence: { name: '围栏', icon: '🚧', cost: 100, effect: '防御+10' },
+        pond: { name: '池塘', icon: '🏊', cost: 300, effect: '快乐+20' },
+        garden: { name: '花园', icon: '🌻', cost: 200, effect: '产出+15' },
+        barn: { name: '谷仓', icon: '🏚️', cost: 500, effect: '容量+50' }
+      },
+      
+      build(type) {
+        const structure = this.structures[type];
+        if (!structure) return;
+        
+        if (GameState.player.coins < structure.cost) {
+          AudioManager.play('error');
+          alert('金币不足！');
+          return;
+        }
+        
+        GameState.player.coins -= structure.cost;
+        GameState.buildings.push({ type, ...structure, builtAt: new Date() });
+        
+        AudioManager.play('success');
+        alert(`🏗️ 建造完成！${structure.icon} ${structure.name} (${structure.effect})`);
+        
+        updateResourceDisplay();
+      }
+    };
+    
+    // ==================== 大世界系统 ====================
+    const WorldSystem = {
+      areas: {
+        meadow: { name: '青青草原', icon: '🌾', difficulty: 1, rewards: ['普通鸡', '饲料'] },
+        forest: { name: '神秘森林', icon: '🌲', difficulty: 2, rewards: ['稀有鸡', '金蛋'] },
+        mountain: { name: '高山牧场', icon: '⛰️', difficulty: 3, rewards: ['史诗鸡', '大量金币'] },
+        desert: { name: '沙漠绿洲', icon: '🏜️', difficulty: 4, rewards: ['传说鸡', '神秘宝箱'] }
+      },
+      
+      explore(areaId) {
+        const area = this.areas[areaId];
+        if (!area) return;
+        
+        AudioManager.play('countdown');
+        
+        // 模拟探险过程
+        const success = Math.random() > (area.difficulty * 0.2);
+        
+        setTimeout(() => {
+          if (success) {
+            const reward = area.rewards[Math.floor(Math.random() * area.rewards.length)];
+            AudioManager.play('success');
+            alert(`🎉 探险成功！在${area.name}发现了：${reward}`);
+            
+            // 添加探险日志
+            addExploreLog(`在${area.name}发现了${reward}！`);
+          } else {
+            AudioManager.play('error');
+            alert(`😅 探险失败！${area.name}太危险了，下次再来吧！`);
+          }
+        }, 1500);
+      }
+    };
+    
+    // ==================== 实时协作系统 ====================
+    const CollaborationSystem = {
+      players: [],
       
       init() {
-        this.currentPet = Math.floor(Math.random() * this.pets.length);
-        this.updatePetDisplay();
+        // 模拟实时在线玩家
+        this.simulateOnlinePlayers();
+        
+        // 定期更新在线人数
+        setInterval(() => {
+          this.updateOnlineCount();
+        }, 5000);
       },
       
-      updatePetDisplay() {
-        const petContainer = document.getElementById('pet-container');
-        if (petContainer) {
-          petContainer.querySelector('.text-8xl').textContent = this.pets[this.currentPet];
-        }
-        const happinessValue = document.getElementById('happiness-value');
-        if (happinessValue) {
-          happinessValue.textContent = this.happiness;
+      simulateOnlinePlayers() {
+        const names = ['小明', '小红', '小刚', '小丽', '小华', '小芳', '小军', '小敏', '小伟', '小静'];
+        this.players = names.map((name, index) => ({
+          id: index + 1,
+          name,
+          avatar: String.fromCharCode(65 + index),
+          status: 'online',
+          lastActive: new Date()
+        }));
+      },
+      
+      updateOnlineCount() {
+        const count = 1000 + Math.floor(Math.random() * 500);
+        GameState.onlineCount = count;
+        
+        const el = document.getElementById('online-count');
+        if (el) {
+          el.textContent = count.toLocaleString();
         }
       },
       
-      interact() {
-        this.happiness = Math.min(100, this.happiness + 5);
-        AudioManager.play('success');
-        this.updatePetDisplay();
+      renderCollaborationUI() {
+        // 渲染协作UI，显示正在共同建设的玩家
+        const container = document.getElementById('collaboration-players');
+        if (!container) return;
         
-        const petContainer = document.getElementById('pet-container');
-        if (petContainer) {
-          petContainer.classList.add('pet-happy');
-          setTimeout(() => {
-            petContainer.classList.remove('pet-happy');
-          }, 500);
-        }
-        
-        if (this.happiness >= 100) {
-          setTimeout(() => {
-            alert('🎉 宠物超级开心！它决定给你一个惊喜！');
-            this.happiness = 50;
-            this.currentPet = Math.floor(Math.random() * this.pets.length);
-            this.updatePetDisplay();
-          }, 600);
-        }
+        container.innerHTML = this.players.slice(0, 10).map(player => `
+          <div class="flex items-center gap-2 p-2 bg-white/10 rounded-lg">
+            <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-xs">
+              ${player.avatar}
+            </div>
+            <span class="text-sm">${player.name}</span>
+          </div>
+        `).join('');
       }
     };
     
@@ -661,6 +1097,45 @@
       localStorage.setItem('gameSettings', JSON.stringify({ darkMode: isDark }));
     }
     
+    function showSection(sectionId) {
+      AudioManager.play('click');
+      
+      // 隐藏所有页面
+      document.querySelectorAll('section').forEach(section => {
+        section.classList.add('hidden');
+      });
+      
+      // 显示指定页面
+      const targetSection = document.getElementById(`${sectionId}-page`);
+      if (targetSection) {
+        targetSection.classList.remove('hidden');
+        targetSection.classList.add('fade-in');
+      }
+      
+      // 初始化页面特定内容
+      if (sectionId === 'coop') {
+        ChickenSystem.renderCoopChickens();
+      } else if (sectionId === 'world') {
+        CollaborationSystem.renderCollaborationUI();
+      }
+    }
+    
+    function updateResourceDisplay() {
+      const elements = {
+        'resource-feed': GameState.player.feed,
+        'resource-eggs': GameState.player.eggs,
+        'resource-coins': GameState.player.coins,
+        'resource-exp': GameState.player.exp
+      };
+      
+      Object.entries(elements).forEach(([id, value]) => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.textContent = value.toLocaleString();
+        }
+      });
+    }
+    
     function createRoom() {
       const playerName = document.getElementById('player-name').value.trim();
       if (!playerName) {
@@ -668,8 +1143,11 @@
         return;
       }
       
+      GameState.player.name = playerName;
+      const room = RoomSystem.createRoom(playerName);
+      
       AudioManager.play('success');
-      RoomSystem.createRoom(playerName);
+      updateRoomUI();
     }
     
     function showJoinRoom() {
@@ -687,7 +1165,7 @@
     }
     
     function joinRoom() {
-      const roomCode = document.getElementById('room-code').value.trim();
+      const roomCode = document.getElementById('room-code').value.trim().toUpperCase();
       const playerName = document.getElementById('player-name').value.trim();
       
       if (!roomCode || roomCode.length !== 6) {
@@ -695,1427 +1173,206 @@
         return;
       }
       
-      AudioManager.play('success');
-      RoomSystem.joinRoom(roomCode, playerName);
+      GameState.player.name = playerName;
+      const room = RoomSystem.joinRoom(roomCode, playerName);
+      
+      if (room) {
+        AudioManager.play('success');
+        updateRoomUI();
+      }
     }
     
     function leaveRoom() {
       AudioManager.play('click');
       RoomSystem.leaveRoom();
+      updateRoomUI();
     }
     
-    function startMultiplayerGame() {
-      AudioManager.play('success');
+    function updateRoomUI() {
+      const roomList = document.getElementById('room-list');
+      const currentRoomInfo = document.getElementById('current-room-info');
       
-      // 同步房间玩家信息到游戏引擎
       if (RoomSystem.currentRoom) {
-        GameEngine.state.players = RoomSystem.currentRoom.players.map((player, index) => ({
-          id: index + 1,
-          name: player.name,
-          score: 0,
-          avatar: index + 1,
-          isHost: player.isHost
-        }));
-      }
-      
-      // 显示游戏模式选择弹窗
-      const modal = document.createElement('div');
-      modal.id = 'game-modal';
-      modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4';
-      modal.innerHTML = `
-        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6">
-          <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold">🎮 选择游戏模式</h2>
-            <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-300 text-2xl" aria-label="关闭">
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-          
-          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            ${renderGameList()}
-          </div>
-        </div>
-      `;
-      
-      document.getElementById('modal-container').appendChild(modal);
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal();
-      });
-    }
-    
-    function interactWithPet() {
-      PetSystem.interact();
-    }
-    
-    function selectMode(modeId) {
-      AudioManager.play('click');
-      GameEngine.state.mode = modeId;
-      
-      const modeNames = {
-        free: '自由模式 - 选择游戏',
-        challenge: '闯关模式 - 按顺序挑战',
-        random: '随机挑战 - 紧张刺激',
-        tournament: '循环赛 - 积分累计'
-      };
-      
-      const modal = document.createElement('div');
-      modal.id = 'game-modal';
-      modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4';
-      modal.innerHTML = `
-        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6">
-          <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold">${modeNames[modeId]}</h2>
-            <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-300 text-2xl" aria-label="关闭">
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-          
-          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            ${renderGameList()}
-          </div>
-        </div>
-      `;
-      
-      document.getElementById('modal-container').appendChild(modal);
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal();
-      });
-    }
-    
-    function renderGameList() {
-      return GameLibrary.getAll().map(game => `
-        <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 text-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition"
-             onclick="startGame('${game.id}')" role="button" tabindex="0">
-          <div class="w-16 h-16 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center mx-auto mb-3">
-            <i class="fas ${game.icon} text-2xl text-white"></i>
-          </div>
-          <h3 class="font-bold text-sm">${game.name}</h3>
-        </div>
-      `).join('');
-    }
-    
-    function closeModal() {
-      const modal = document.getElementById('game-modal');
-      if (modal) modal.remove();
-    }
-    
-    function startGame(gameId) {
-      closeModal();
-      GameEngine.startGame(GameEngine.state.mode, gameId);
-    }
-    
-    function exitGame() {
-      AudioManager.play('click');
-      GameEngine.exitCurrentScreen();
-    }
-    
-    // ==================== 游戏注册 ====================
-    
-    // 1. 你画我猜（修复版）
-    GameLibrary.register('draw-guess', {
-      id: 'draw-guess',
-      name: '你画我猜',
-      icon: 'fa-palette',
-      category: 'collaboration',
-      maxPlayers: 3,
-      duration: 60,
-      
-      canvas: null,
-      ctx: null,
-      currentPlayer: 1,
-      phase: 'draw',
-      currentWord: '',
-      timerInterval: null,
-      
-      words: ['猫', '狗', '太阳', '月亮', '星星', '房子', '汽车', '飞机', '树', '花', '山', '水', '火', '风', '雨', '彩虹', '小鸟', '书本', '桌子', '手机', '电脑', '键盘', '鼠标', '电视', '冰箱', '空调', '自行车', '火车', '轮船', '火箭'],
-      
-      render() {
-        return `
-          <div class="max-w-4xl mx-auto">
-            <div class="text-center mb-4">
-              <div class="inline-block px-4 py-2 bg-primary text-white rounded-full">
-                <span id="phase-text">玩家1绘画中...</span>
-              </div>
-              <div id="timer" class="mt-2 text-3xl font-bold text-danger">60</div>
-            </div>
-            
-            <div id="word-display" class="text-center mb-4 p-4 bg-success text-white rounded-lg shadow">
-              关键词：<span id="current-word" class="text-2xl font-bold"></span>
-            </div>
-            
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 mb-4">
-              <canvas id="draw-canvas" class="w-full h-64 md:h-96 border-2 border-gray-300 rounded-lg touch-none bg-white"></canvas>
-            </div>
-            
-            <div class="flex flex-wrap gap-2 justify-center mb-4">
-              <button onclick="Game.draw.setColor('#000000')" class="w-10 h-10 rounded-full bg-black border-2 border-gray-300 hover:scale-110 transition"></button>
-              <button onclick="Game.draw.setColor('#EF4444')" class="w-10 h-10 rounded-full bg-red-500 border-2 hover:scale-110 transition"></button>
-              <button onclick="Game.draw.setColor('#3B82F6')" class="w-10 h-10 rounded-full bg-blue-500 border-2 hover:scale-110 transition"></button>
-              <button onclick="Game.draw.setColor('#10B981')" class="w-10 h-10 rounded-full bg-green-500 border-2 hover:scale-110 transition"></button>
-              <button onclick="Game.draw.setColor('#F59E0B')" class="w-10 h-10 rounded-full bg-yellow-500 border-2 hover:scale-110 transition"></button>
-              <button onclick="Game.draw.setColor('#8B5CF6')" class="w-10 h-10 rounded-full bg-purple-500 border-2 hover:scale-110 transition"></button>
-              <button onclick="Game.draw.setColor('#EC4899')" class="w-10 h-10 rounded-full bg-pink-500 border-2 hover:scale-110 transition"></button>
-              <button onclick="Game.draw.setColor('#FFFFFF')" class="w-10 h-10 rounded-full bg-white border-2 border-gray-400 hover:scale-110 transition" title="橡皮擦">🧹</button>
-              <button onclick="Game.draw.setBrushSize(2)" class="px-3 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 transition">细</button>
-              <button onclick="Game.draw.setBrushSize(5)" class="px-3 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 transition">中</button>
-              <button onclick="Game.draw.setBrushSize(10)" class="px-3 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 transition">粗</button>
-              <button onclick="Game.draw.clear()" class="px-4 py-2 bg-danger text-white rounded hover:bg-danger/90 transition">清除画布</button>
-            </div>
-            
-            <div id="guess-section" class="hidden text-center">
-              <input type="text" id="guess-input" placeholder="请输入你的猜测" 
-                     class="px-4 py-3 border-2 rounded-lg text-lg w-full max-w-md dark:bg-gray-800 dark:border-gray-600">
-              <button onclick="Game.draw.submitGuess()" 
-                      class="mt-4 px-8 py-3 bg-primary text-white rounded-lg text-lg hover:bg-primary/90 transition">
-                提交答案
-              </button>
-            </div>
-            
-            <div class="text-center mt-4">
-              <button onclick="Game.draw.nextPhase()" id="next-phase-btn"
-                      class="px-6 py-3 bg-success text-white rounded-lg hover:bg-success/90 transition">
-                完成绘画 → 轮到玩家2
-              </button>
-            </div>
-          </div>
-        `;
-      },
-      
-      init() {
-        this.currentWord = this.words[Math.floor(Math.random() * this.words.length)];
-        document.getElementById('current-word').textContent = this.currentWord;
-        this.setupCanvas();
-        this.startTimer();
-      },
-      
-      setupCanvas() {
-        this.canvas = document.getElementById('draw-canvas');
-        this.ctx = this.canvas.getContext('2d');
+        // 显示当前房间信息
+        roomList.classList.add('hidden');
+        currentRoomInfo.classList.remove('hidden');
         
-        const rect = this.canvas.getBoundingClientRect();
-        this.canvas.width = rect.width * 2;
-        this.canvas.height = rect.height * 2;
-        this.ctx.scale(2, 2);
-        this.ctx.lineCap = 'round';
-        this.ctx.lineJoin = 'round';
-        this.ctx.strokeStyle = '#000000';
-        this.ctx.lineWidth = 5;
+        document.getElementById('current-room-code').textContent = RoomSystem.currentRoom.code;
         
-        this.isDrawing = false;
-        this.lastX = 0;
-        this.lastY = 0;
+        // 渲染玩家槽位
+        const playerSlots = document.getElementById('player-slots');
+        const maxPlayers = RoomSystem.currentRoom.maxPlayers;
         
-        const getPos = (e) => {
-          const rect = this.canvas.getBoundingClientRect();
-          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-          const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-          return { x: clientX - rect.left, y: clientY - rect.top };
-        };
-        
-        this.canvas.addEventListener('mousedown', (e) => {
-          if (this.phase !== 'draw') return;
-          this.isDrawing = true;
-          const pos = getPos(e);
-          this.lastX = pos.x;
-          this.lastY = pos.y;
-        });
-        
-        this.canvas.addEventListener('mousemove', (e) => {
-          if (!this.isDrawing || this.phase !== 'draw') return;
-          const pos = getPos(e);
-          this.ctx.beginPath();
-          this.ctx.moveTo(this.lastX, this.lastY);
-          this.ctx.lineTo(pos.x, pos.y);
-          this.ctx.stroke();
-          this.lastX = pos.x;
-          this.lastY = pos.y;
-        });
-        
-        this.canvas.addEventListener('mouseup', () => this.isDrawing = false);
-        this.canvas.addEventListener('mouseout', () => this.isDrawing = false);
-        
-        this.canvas.addEventListener('touchstart', (e) => {
-          e.preventDefault();
-          if (this.phase !== 'draw') return;
-          this.isDrawing = true;
-          const pos = getPos(e);
-          this.lastX = pos.x;
-          this.lastY = pos.y;
-        });
-        
-        this.canvas.addEventListener('touchmove', (e) => {
-          e.preventDefault();
-          if (!this.isDrawing || this.phase !== 'draw') return;
-          const pos = getPos(e);
-          this.ctx.beginPath();
-          this.ctx.moveTo(this.lastX, this.lastY);
-          this.ctx.lineTo(pos.x, pos.y);
-          this.ctx.stroke();
-          this.lastX = pos.x;
-          this.lastY = pos.y;
-        });
-        
-        this.canvas.addEventListener('touchend', () => this.isDrawing = false);
-      },
-      
-      setColor(color) {
-        this.ctx.strokeStyle = color;
-        if (color === '#FFFFFF') {
-          this.ctx.lineWidth = 20;
-        } else {
-          this.ctx.lineWidth = 5;
-        }
-      },
-      
-      setBrushSize(size) {
-        this.ctx.lineWidth = size;
-      },
-      
-      clear() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.fillStyle = 'white';
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-      },
-      
-      startTimer() {
-        let time = 60;
-        const timerEl = document.getElementById('timer');
-        
-        this.timerInterval = setInterval(() => {
-          time--;
-          timerEl.textContent = time;
-          
-          if (time <= 10) {
-            AudioManager.play('tick');
-          }
-          
-          if (time <= 0) {
-            clearInterval(this.timerInterval);
-            AudioManager.play('complete');
-            this.nextPhase();
-          }
-        }, 1000);
-      },
-      
-      nextPhase() {
-        if (this.timerInterval) {
-          clearInterval(this.timerInterval);
-        }
-        
-        this.currentPlayer++;
-        
-        if (this.currentPlayer === 2) {
-          this.phase = 'draw';
-          document.getElementById('phase-text').textContent = '玩家2绘画中...';
-          document.getElementById('guess-section').classList.add('hidden');
-          document.getElementById('next-phase-btn').classList.remove('hidden');
-          document.getElementById('next-phase-btn').textContent = '完成绘画 → 轮到玩家3';
-          this.clear();
-          this.startTimer();
-        } else if (this.currentPlayer === 3) {
-          this.phase = 'draw';
-          document.getElementById('phase-text').textContent = '玩家3绘画中...';
-          document.getElementById('guess-section').classList.add('hidden');
-          document.getElementById('next-phase-btn').classList.remove('hidden');
-          document.getElementById('next-phase-btn').textContent = '完成绘画 → 猜答案';
-          this.clear();
-          this.startTimer();
-        } else {
-          this.phase = 'guess';
-          document.getElementById('phase-text').textContent = '玩家3猜答案！';
-          document.getElementById('guess-section').classList.remove('hidden');
-          document.getElementById('next-phase-btn').classList.add('hidden');
-          document.getElementById('word-display').classList.add('hidden');
-        }
-      },
-      
-      submitGuess() {
-        const input = document.getElementById('guess-input');
-        const guess = input.value.trim();
-        
-        if (guess === this.currentWord) {
-          AudioManager.play('success');
-          GameEngine.updateScore(30);
-          alert('🎉 恭喜猜对了！+30分');
-        } else {
-          AudioManager.play('error');
-          GameEngine.updateScore(10);
-          alert(`很遗憾，答案是"${this.currentWord}"。+10分鼓励`);
-        }
-        
-        this.end();
-      },
-      
-      end() {
-        const finalScore = GameEngine.state.players[0].score;
-        alert(`🎊 游戏结束！\n\n你的最终得分：${finalScore}分`);
-        GameEngine.exitCurrentScreen();
-      }
-    });
-    
-    // 2. 知识达人（重新设计，增加难度）
-    GameLibrary.register('trivia', {
-      id: 'trivia',
-      name: '知识达人',
-      icon: 'fa-brain',
-      category: 'competition',
-      maxPlayers: 3,
-      duration: 60,
-      
-      questions: [
-        { q: '量子力学中，海森堡不确定性原理指出，无法同时精确测量粒子的哪两个物理量？', a: ['位置和动量', 'position and momentum', '位置动量'] },
-        { q: 'DNA的双螺旋结构是由哪两位科学家在1953年发现的？', a: ['沃森和克里克', 'watson and crick', 'watson crick'] },
-        { q: '在化学元素周期表中，原子序数为79的元素是什么？', a: ['金', 'gold', 'au'] },
-        { q: '相对论中，E=mc²的c代表什么？', a: ['光速', '光速', 'speed of light'] },
-        { q: '人体中最大的器官是什么？', a: ['皮肤', 'skin'] },
-        { q: '光合作用的主要产物是什么？', a: ['葡萄糖和氧气', 'glucose and oxygen', '葡萄糖氧气'] },
-        { q: '三角函数中，sin²x + cos²x 的值等于多少？', a: ['1', '一'] },
-        { q: '世界上第一台电子计算机ENIAC诞生于哪一年？', a: ['1946', '一九四六'] },
-        { q: '在Python编程中，列表推导式的语法是什么？', a: ['[x for x in range(10)]', '列表推导式'] },
-        { q: '化学中，pH值等于7表示什么？', a: ['中性', 'neutral'] }
-      ],
-      
-      currentQuestion: 0,
-      canAnswer: true,
-      
-      render() {
-        return `
-          <div class="max-w-4xl mx-auto">
-            <div class="text-center mb-6">
-              <div class="inline-block px-6 py-3 bg-primary text-white rounded-full text-xl">
-                第 <span id="question-num">1</span> / <span id="total-questions">5</span> 题
-              </div>
-            </div>
-            
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-6">
-              <div class="mb-4">
-                <span class="inline-block px-3 py-1 bg-warning text-white rounded-full text-sm">难度：⭐⭐⭐</span>
-              </div>
-              <h2 id="question-text" class="text-xl md:text-2xl font-bold text-center mb-8">
-                加载中...
-              </h2>
-              
-              <div id="answer-section" class="text-center">
-                <input type="text" id="answer-input" 
-                       class="px-6 py-4 border-2 border-primary rounded-xl text-xl w-full max-w-lg dark:bg-gray-700 dark:border-gray-600"
-                       placeholder="输入你的答案...">
-                <button onclick="Game.trivia.submitAnswer()" 
-                        class="mt-4 px-8 py-4 bg-primary text-white rounded-xl text-xl hover:bg-primary/90 transition">
-                  提交答案
-                </button>
-              </div>
-            </div>
-            
-            <div id="feedback" class="hidden text-center mb-6">
-              <div id="feedback-text" class="text-2xl font-bold p-4 rounded-lg"></div>
-            </div>
-            
-            <div class="grid grid-cols-3 gap-4">
-              ${GameEngine.state.players.map((p, i) => `
-                <div class="bg-white dark:bg-gray-800 rounded-xl p-4 text-center shadow">
-                  <div class="text-4xl mb-2">${['👤', '👤', '👤'][i]}</div>
-                  <div class="font-bold">${p.name}</div>
-                  <div class="text-3xl font-bold text-primary mt-2">${p.score}</div>
+        playerSlots.innerHTML = Array.from({ length: maxPlayers }, (_, i) => {
+          const player = RoomSystem.currentRoom.players[i];
+          if (player) {
+            return `
+              <div class="player-slot occupied p-4 border-2 border-primary rounded-xl text-center">
+                <div class="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center mx-auto mb-2 text-xl">
+                  ${player.name.charAt(0)}
                 </div>
-              `).join('')}
-            </div>
-            
-            <div class="text-center mt-6">
-              <button onclick="Game.trivia.nextQuestion()" id="next-btn" 
-                      class="hidden px-8 py-4 bg-success text-white rounded-xl text-xl">
-                下一题 →
-              </button>
-            </div>
-          </div>
-        `;
-      },
-      
-      init() {
-        document.getElementById('total-questions').textContent = Math.min(5, this.questions.length);
-        this.showQuestion();
-      },
-      
-      showQuestion() {
-        const q = this.questions[this.currentQuestion];
-        document.getElementById('question-num').textContent = this.currentQuestion + 1;
-        document.getElementById('question-text').textContent = q.q;
-        document.getElementById('answer-input').value = '';
-        document.getElementById('answer-input').disabled = false;
-        document.getElementById('feedback').classList.add('hidden');
-        document.getElementById('next-btn').classList.add('hidden');
-        this.canAnswer = true;
-      },
-      
-      submitAnswer() {
-        if (!this.canAnswer) return;
-        
-        const input = document.getElementById('answer-input');
-        const answer = input.value.trim().toLowerCase();
-        const correct = this.questions[this.currentQuestion].a.some(a => 
-          a.toLowerCase() === answer
-        );
-        
-        this.canAnswer = false;
-        input.disabled = true;
-        
-        const feedback = document.getElementById('feedback');
-        const feedbackText = document.getElementById('feedback-text');
-        
-        if (correct) {
-          AudioManager.play('success');
-          feedbackText.textContent = '🎉 正确！+20分';
-          feedbackText.className = 'text-2xl font-bold p-4 rounded-lg bg-green-100 text-green-800';
-          GameEngine.updateScore(20);
-        } else {
-          AudioManager.play('error');
-          feedbackText.textContent = '❌ 错误！-10分';
-          feedbackText.className = 'text-2xl font-bold p-4 rounded-lg bg-red-100 text-red-800';
-          GameEngine.updateScore(-10);
-        }
-        
-        feedback.classList.remove('hidden');
-        
-        if (this.currentQuestion < Math.min(4, this.questions.length - 1)) {
-          document.getElementById('next-btn').classList.remove('hidden');
-        } else {
-          setTimeout(() => this.end(), 1500);
-        }
-      },
-      
-      nextQuestion() {
-        this.currentQuestion++;
-        this.showQuestion();
-      },
-      
-      end() {
-        const score = GameEngine.state.players[0].score;
-        AudioManager.play('victory');
-        alert(`🏆 游戏结束！\n\n你的最终得分：${score}分\n\n${score >= 60 ? '太厉害了！知识达人！🎓' : score >= 40 ? '做得不错！👍' : '继续加油！💪'}`);
-        GameEngine.exitCurrentScreen();
-      }
-    });
-    
-    // 3. 故事接龙
-    GameLibrary.register('story-chain', {
-      id: 'story-chain',
-      name: '故事接龙',
-      icon: 'fa-book-open',
-      category: 'creative',
-      maxPlayers: 3,
-      duration: 60,
-      
-      openings: [
-        '在一个被遗忘的古老图书馆里，一本尘封的魔法书突然开始发光...',
-        '深夜的实验室中，科学家终于完成了那个改变世界的实验，但结果出乎意料...',
-        '在遥远的未来，人类发现了通往平行宇宙的门，但第一个穿越的人带回了一个惊人的消息...',
-        '古老的预言说，当三颗星星连成一线时，沉睡的巨龙将会苏醒...',
-        '在一个普通的早晨，主角醒来发现自己拥有了读心术的能力...'
-      ],
-      
-      currentOpening: '',
-      storyParts: [],
-      currentPlayer: 0,
-      maxParts: 3,
-      
-      render() {
-        return `
-          <div class="max-w-4xl mx-auto">
-            <div class="text-center mb-6">
-              <div class="inline-block px-6 py-3 bg-secondary text-white rounded-full text-xl">
-                第 <span id="turn-num">1</span> / <span id="max-turns">3</span> 回合
+                <div class="font-bold text-sm">${player.name}</div>
+                ${player.isHost ? '<div class="text-xs text-primary">房主</div>' : ''}
               </div>
-            </div>
-            
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 mb-6">
-              <h3 class="text-lg font-bold mb-4 text-gray-600 dark:text-gray-300">故事开头：</h3>
-              <p id="story-opening" class="text-xl mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"></p>
-              
-              <h3 class="text-lg font-bold mb-4 text-gray-600 dark:text-gray-300">故事发展：</h3>
-              <div id="story-so-far" class="space-y-3 mb-6"></div>
-              
-              <div class="border-t border-gray-200 dark:border-gray-600 pt-4">
-                <p class="text-lg font-bold mb-3">
-                  轮到 <span id="current-player-name" class="text-primary"></span> 续写
-                </p>
-                <textarea id="story-input" rows="3" 
-                          class="w-full p-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-lg focus:border-primary dark:bg-gray-700"
-                          placeholder="请在这里续写故事（50字以内）..."></textarea>
-                <div class="flex justify-between items-center mt-3">
-                  <span id="char-count" class="text-gray-500">0 / 50</span>
-                  <button onclick="Game.story.submitPart()" 
-                          class="px-6 py-3 bg-secondary text-white rounded-lg text-lg hover:bg-secondary/90 transition">
-                    提交续写
-                  </button>
+            `;
+          } else {
+            return `
+              <div class="player-slot empty p-4 border-2 border-gray-300 rounded-xl text-center">
+                <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-2 text-xl">
+                  +
                 </div>
+                <div class="text-sm text-gray-400">空位</div>
               </div>
-            </div>
-            
-            <button onclick="Game.story.finishStory()" 
-                    class="w-full py-4 bg-success text-white rounded-xl text-xl hover:bg-success/90 transition">
-              🎭 完成故事并评分
-            </button>
-          </div>
-        `;
-      },
-      
-      init() {
-        this.currentOpening = this.openings[Math.floor(Math.random() * this.openings.length)];
-        this.storyParts = [];
-        this.currentPlayer = 0;
-        
-        document.getElementById('story-opening').textContent = this.currentOpening;
-        document.getElementById('max-turns').textContent = this.maxParts;
-        this.updateTurn();
-        
-        document.getElementById('story-input').addEventListener('input', (e) => {
-          const count = e.target.value.length;
-          document.getElementById('char-count').textContent = `${count} / 50`;
-          if (count > 50) {
-            e.target.value = e.target.value.substring(0, 50);
+            `;
           }
-        });
-      },
-      
-      updateTurn() {
-        document.getElementById('turn-num').textContent = this.currentPlayer + 1;
-        document.getElementById('current-player-name').textContent = 
-          GameEngine.state.players[this.currentPlayer].name;
+        }).join('');
         
-        const storySoFar = document.getElementById('story-so-far');
-        storySoFar.innerHTML = this.storyParts.map((part, i) => `
-          <div class="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
-            <span class="font-bold text-blue-600 dark:text-blue-400">${GameEngine.state.players[i].name}：</span>
-            ${part}
+        // 显示房间设置（仅房主）
+        const roomSettings = document.getElementById('room-settings');
+        const startBtn = document.getElementById('start-room-game-btn');
+        const waitingText = document.getElementById('waiting-text');
+        
+        if (RoomSystem.currentRoom.players[0]?.name === GameState.player.name) {
+          roomSettings.classList.remove('hidden');
+          startBtn.classList.remove('hidden');
+          waitingText.classList.add('hidden');
+        } else {
+          roomSettings.classList.add('hidden');
+          startBtn.classList.add('hidden');
+          waitingText.classList.remove('hidden');
+        }
+      } else {
+        // 显示房间列表
+        roomList.classList.remove('hidden');
+        currentRoomInfo.classList.add('hidden');
+        
+        const publicRooms = RoomSystem.getPublicRooms();
+        roomList.innerHTML = publicRooms.map(room => `
+          <div class="room-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 cursor-pointer"
+               onclick="joinRoomByCode('${room.code}')">
+            <div class="flex justify-between items-center mb-3">
+              <h3 class="font-bold text-lg">${room.name}</h3>
+              <span class="px-3 py-1 bg-primary text-white rounded-full text-sm">
+                ${room.players.length}/${room.maxPlayers}
+              </span>
+            </div>
+            <div class="flex items-center gap-2 text-sm text-gray-500">
+              <span>房主: ${room.host}</span>
+              <span>•</span>
+              <span>${room.type === 'public' ? '公共' : '私人'}</span>
+            </div>
+            <div class="mt-3 text-xs text-gray-400">
+              房间号: <span class="font-mono">${room.code}</span>
+            </div>
           </div>
         `).join('');
-      },
-      
-      submitPart() {
-        const input = document.getElementById('story-input');
-        const part = input.value.trim();
         
-        if (!part) {
-          alert('请输入故事内容！');
-          return;
+        if (publicRooms.length === 0) {
+          roomList.innerHTML = `
+            <div class="col-span-full text-center py-12 text-gray-500">
+              <div class="text-6xl mb-4">🏠</div>
+              <p>暂无公共房间</p>
+              <p class="text-sm mt-2">创建一个房间邀请朋友加入吧！</p>
+            </div>
+          `;
         }
-        
+      }
+    }
+    
+    function joinRoomByCode(code) {
+      const playerName = document.getElementById('player-name').value.trim();
+      if (!playerName) {
+        alert('请输入你的昵称！');
+        return;
+      }
+      
+      GameState.player.name = playerName;
+      const room = RoomSystem.joinRoom(code, playerName);
+      
+      if (room) {
         AudioManager.play('success');
-        this.storyParts.push(part);
-        input.value = '';
-        document.getElementById('char-count').textContent = '0 / 50';
-        
-        if (this.currentPlayer < this.maxParts - 1) {
-          this.currentPlayer++;
-          this.updateTurn();
-        } else {
-          this.showCompleteStory();
-        }
-      },
-      
-      showCompleteStory() {
-        AudioManager.play('complete');
-        alert(`✨ 故事完成！\n\n完整故事：\n\n${this.currentOpening}\n\n${this.storyParts.map((p, i) => `${GameEngine.state.players[i].name}：${p}`).join('\n\n')}\n\n`);
-        
-        GameEngine.updateScore(50);
-        alert('🎉 完成故事！+50分');
-        GameEngine.exitCurrentScreen();
+        updateRoomUI();
       }
-    });
+    }
     
-    // 4. 命运转盘
-    GameLibrary.register('fortune-wheel', {
-      id: 'fortune-wheel',
-      name: '命运转盘',
-      icon: 'fa-dharmachakra',
-      category: 'mixed',
-      maxPlayers: 3,
-      duration: 60,
+    function saveRoomSettings() {
+      if (!RoomSystem.currentRoom) return;
       
-      challenges: [
-        { type: 'draw-guess', name: '你画我猜', difficulty: 1, icon: 'fa-palette' },
-        { type: 'trivia', name: '知识达人', difficulty: 2, icon: 'fa-brain' },
-        { type: 'story-chain', name: '故事接龙', difficulty: 2, icon: 'fa-book-open' },
-        { type: 'reaction', name: '反应挑战', difficulty: 1, icon: 'fa-bolt' },
-        { type: 'memory', name: '记忆挑战', difficulty: 2, icon: 'fa-memory' }
-      ],
+      const name = document.getElementById('room-name').value.trim();
+      const maxPlayers = parseInt(document.getElementById('room-max-players').value);
+      const type = document.getElementById('room-type').value;
       
-      currentChallenge: 0,
-      maxSpins: 5,
-      totalScore: 0,
-      isSpinning: false,
+      if (name) RoomSystem.currentRoom.name = name;
+      RoomSystem.currentRoom.maxPlayers = maxPlayers;
+      RoomSystem.currentRoom.type = type;
       
-      render() {
-        return `
-          <div class="max-w-4xl mx-auto text-center">
-            <div class="mb-6">
-              <div class="inline-block px-6 py-3 bg-primary text-white rounded-full text-xl">
-                第 <span id="spin-num">1</span> / <span id="max-spins">5</span> 回合
-              </div>
-            </div>
-            
-            <div id="wheel-container" class="relative inline-block mb-6">
-              <div id="wheel" class="w-64 h-64 md:w-80 md:h-80 rounded-full border-8 border-primary 
-                                   transition-transform duration-[3000ms] ease-out"
-                   style="background: conic-gradient(
-                     #EF4444 0deg 72deg,
-                     #3B82F6 72deg 144deg,
-                     #10B981 144deg 216deg,
-                     #F59E0B 216deg 288deg,
-                     #8B5CF6 288deg 360deg
-                   );">
-                <div class="w-full h-full flex items-center justify-center">
-                  <div class="w-20 h-20 bg-white rounded-full shadow-lg flex items-center justify-center text-2xl">
-                    🎰
-                  </div>
-                </div>
-              </div>
-              <div id="wheel-pointer" 
-                   class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2
-                          w-0 h-0 border-l-8 border-r-8 border-t-16 border-l-transparent border-r-transparent 
-                          border-t-primary">
-              </div>
-            </div>
-            
-            <button onclick="Game.wheel.spin()" id="spin-btn"
-                    class="px-8 py-4 bg-primary text-white rounded-xl text-2xl font-bold mb-6 hover:bg-primary/90 transition disabled:opacity-50">
-              🎰 转动命运之轮
-            </button>
-            
-            <div id="challenge-result" class="hidden bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl mb-6 max-w-md mx-auto">
-              <div class="w-20 h-20 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center mx-auto mb-4">
-                <i id="challenge-icon" class="fas fa-dice text-4xl text-white"></i>
-              </div>
-              <h3 id="challenge-name" class="text-2xl font-bold mb-4"></h3>
-              <div id="difficulty-stars" class="text-2xl mb-4"></div>
-              <button onclick="Game.wheel.completeChallenge()" 
-                      class="px-6 py-3 bg-success text-white rounded-lg text-lg hover:bg-success/90 transition">
-                完成挑战！+<span id="challenge-points">20</span>分
-              </button>
-            </div>
-            
-            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow max-w-md mx-auto">
-              <h3 class="text-xl font-bold mb-4">当前总分</h3>
-              <p id="total-score" class="text-5xl font-bold text-primary">0</p>
-            </div>
-          </div>
-        `;
-      },
-      
-      init() {
-        this.currentChallenge = 0;
-        this.totalScore = 0;
-        document.getElementById('max-spins').textContent = this.maxSpins;
-      },
-      
-      spin() {
-        if (this.isSpinning) return;
-        this.isSpinning = true;
-        
-        const btn = document.getElementById('spin-btn');
-        btn.disabled = true;
-        
-        const wheel = document.getElementById('wheel');
-        const randomDeg = 1800 + Math.random() * 1800;
-        wheel.style.transform = `rotate(${randomDeg}deg)`;
-        
-        AudioManager.play('tick');
-        
-        setTimeout(() => {
-          const actualDeg = randomDeg % 360;
-          const segment = Math.floor(actualDeg / 72);
-          const challenge = this.challenges[segment % this.challenges.length];
-          
-          this.showChallenge(challenge);
-          AudioManager.play('complete');
-          this.isSpinning = false;
-        }, 3000);
-      },
-      
-      showChallenge(challenge) {
-        document.getElementById('challenge-result').classList.remove('hidden');
-        document.getElementById('challenge-name').textContent = challenge.name;
-        document.getElementById('challenge-icon').className = `fas ${challenge.icon} text-4xl text-white`;
-        document.getElementById('difficulty-stars').textContent = '⭐'.repeat(challenge.difficulty);
-        document.getElementById('challenge-points').textContent = challenge.difficulty * 10 + 10;
-      },
-      
-      completeChallenge() {
-        const challenge = this.challenges[Math.floor(Math.random() * this.challenges.length)];
-        const score = challenge.difficulty * 10 + 10;
-        this.totalScore += score;
-        document.getElementById('total-score').textContent = this.totalScore;
-        
-        AudioManager.play('success');
-        alert(`🎉 挑战完成！+${score}分`);
-        
-        this.currentChallenge++;
-        
-        if (this.currentChallenge >= this.maxSpins) {
-          this.end();
-        } else {
-          document.getElementById('spin-num').textContent = this.currentChallenge + 1;
-          document.getElementById('challenge-result').classList.add('hidden');
-          document.getElementById('spin-btn').disabled = false;
-        }
-      },
-      
-      end() {
-        AudioManager.play('victory');
-        alert(`🎊 命运转盘结束！\n\n最终得分：${this.totalScore}分\n\n${this.totalScore >= 80 ? '太厉害了！命运的主宰者！👑' : this.totalScore >= 50 ? '做得不错！继续转动命运！🎯' : '下次好运！💫'}`);
-        GameEngine.exitCurrentScreen();
-      }
-    });
+      AudioManager.play('success');
+      alert('房间设置已保存！');
+      updateRoomUI();
+    }
     
-    // 5. 反应挑战
-    GameLibrary.register('reaction', {
-      id: 'reaction',
-      name: '反应挑战',
-      icon: 'fa-bolt',
-      category: 'competition',
-      maxPlayers: 3,
-      duration: 30,
-      
-      phase: 'waiting',
-      waitTime: 0,
-      startTime: 0,
-      bestTime: Infinity,
-      round: 0,
-      maxRounds: 5,
-      
-      render() {
-        return `
-          <div class="max-w-2xl mx-auto text-center">
-            <div class="mb-6">
-              <div class="inline-block px-6 py-3 bg-warning text-white rounded-full text-xl">
-                第 <span id="round-num">1</span> / <span id="max-rounds">5</span> 轮
-              </div>
-            </div>
-            
-            <div id="game-area" class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-12 mb-6 min-h-[300px] flex items-center justify-center cursor-pointer select-none">
-              <div id="status-text" class="text-4xl font-bold">
-                点击开始测试
-              </div>
-            </div>
-            
-            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow">
-              <h3 class="text-xl font-bold mb-4">🏆 排行榜</h3>
-              <div class="space-y-3">
-                <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <span>最佳反应时间</span>
-                  <span id="best-time" class="text-2xl font-bold text-primary">--</span>
-                </div>
-                <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <span>平均反应时间</span>
-                  <span id="avg-time" class="text-2xl font-bold text-secondary">--</span>
-                </div>
-                <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <span>本次得分</span>
-                  <span id="current-score" class="text-2xl font-bold text-success">0</span>
-                </div>
-              </div>
-            </div>
-            
-            <button onclick="Game.reaction.reset()" 
-                    class="mt-6 px-8 py-4 bg-gray-200 dark:bg-gray-700 rounded-xl text-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-              🔄 重新开始
-            </button>
-          </div>
-        `;
-      },
-      
-      init() {
-        this.round = 0;
-        this.bestTime = Infinity;
-        this.totalTime = 0;
-        this.currentScore = 0;
-        document.getElementById('max-rounds').textContent = this.maxRounds;
-        document.getElementById('game-area').onclick = () => this.handleClick();
-      },
-      
-      handleClick() {
-        const gameArea = document.getElementById('game-area');
-        const statusText = document.getElementById('status-text');
-        
-        if (this.phase === 'waiting') {
-          AudioManager.play('countdown');
-          this.phase = 'ready';
-          gameArea.className = 'bg-yellow-100 dark:bg-yellow-900 rounded-2xl shadow-xl p-12 mb-6 min-h-[300px] flex items-center justify-center cursor-pointer select-none';
-          statusText.textContent = '准备...';
-          statusText.className = 'text-4xl font-bold text-yellow-600';
-          
-          this.waitTime = 1000 + Math.random() * 3000;
-          this.waitTimeout = setTimeout(() => this.showGo(), this.waitTime);
-        } else if (this.phase === 'ready') {
-          clearTimeout(this.waitTimeout);
-          AudioManager.play('error');
-          gameArea.className = 'bg-red-100 dark:bg-red-900 rounded-2xl shadow-xl p-12 mb-6 min-h-[300px] flex items-center justify-center cursor-pointer select-none';
-          statusText.textContent = '太早了！等待绿色...';
-          statusText.className = 'text-4xl font-bold text-red-600';
-          
-          setTimeout(() => this.resetRound(), 1000);
-        } else if (this.phase === 'go') {
-          const reactionTime = Date.now() - this.startTime;
-          
-          if (reactionTime < this.bestTime) {
-            this.bestTime = reactionTime;
-          }
-          this.totalTime += reactionTime;
-          this.round++;
-          
-          const points = reactionTime < 200 ? 30 : reactionTime < 300 ? 20 : reactionTime < 400 ? 10 : 5;
-          this.currentScore += points;
-          
-          AudioManager.play('success');
-          gameArea.className = 'bg-green-100 dark:bg-green-900 rounded-2xl shadow-xl p-12 mb-6 min-h-[300px] flex items-center justify-center cursor-pointer select-none';
-          statusText.textContent = `${reactionTime}ms！+${points}分`;
-          statusText.className = 'text-4xl font-bold text-green-600';
-          
-          this.updateStats();
-          
-          if (this.round >= this.maxRounds) {
-            setTimeout(() => this.end(), 1500);
-          } else {
-            setTimeout(() => this.resetRound(), 1500);
-          }
-        }
-      },
-      
-      showGo() {
-        const gameArea = document.getElementById('game-area');
-        const statusText = document.getElementById('status-text');
-        
-        this.phase = 'go';
-        this.startTime = Date.now();
-        
-        gameArea.className = 'bg-green-100 dark:bg-green-900 rounded-2xl shadow-xl p-12 mb-6 min-h-[300px] flex items-center justify-center cursor-pointer select-none';
-        statusText.textContent = '点击！';
-        statusText.className = 'text-6xl font-bold text-green-600 animate-pulse';
-        
-        AudioManager.play('success');
-      },
-      
-      resetRound() {
-        const gameArea = document.getElementById('game-area');
-        const statusText = document.getElementById('status-text');
-        document.getElementById('round-num').textContent = Math.min(this.round + 1, this.maxRounds);
-        
-        this.phase = 'waiting';
-        gameArea.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-12 mb-6 min-h-[300px] flex items-center justify-center cursor-pointer select-none';
-        statusText.textContent = '点击开始测试';
-        statusText.className = 'text-4xl font-bold';
-      },
-      
-      updateStats() {
-        const bestEl = document.getElementById('best-time');
-        const avgEl = document.getElementById('avg-time');
-        const scoreEl = document.getElementById('current-score');
-        
-        bestEl.textContent = this.bestTime === Infinity ? '--' : `${this.bestTime}ms`;
-        avgEl.textContent = this.round > 0 ? `${Math.round(this.totalTime / this.round)}ms` : '--';
-        scoreEl.textContent = this.currentScore;
-      },
-      
-      reset() {
-        this.init();
-        this.updateStats();
-      },
-      
-      end() {
-        const avg = Math.round(this.totalTime / this.round);
-        AudioManager.play('victory');
-        alert(`🎊 反应挑战结束！\n\n最佳反应：${this.bestTime}ms\n平均反应：${avg}ms\n总得分：${this.currentScore}分\n\n${this.bestTime < 200 ? '惊人！你是闪电侠！⚡' : this.bestTime < 300 ? '反应很快！👍' : '继续练习！💪'}`);
-        GameEngine.updateScore(this.currentScore);
-        GameEngine.exitCurrentScreen();
-      }
-    });
+    function startRoomGame() {
+      AudioManager.play('success');
+      alert('🎮 游戏开始！正在进入养鸡场...');
+      showSection('coop');
+    }
     
-    // 6. 记忆挑战
-    GameLibrary.register('memory', {
-      id: 'memory',
-      name: '记忆挑战',
-      icon: 'fa-memory',
-      category: 'mixed',
-      maxPlayers: 3,
-      duration: 30,
-      
-      items: ['🍎', '🍊', '🍋', '🍇', '🍓', '🍒', '🥝', '🍑', '🥭', '🍍'],
-      sequence: [],
-      playerSequence: [],
-      level: 1,
-      maxLevel: 5,
-      isShowing: false,
-      
-      render() {
-        return `
-          <div class="max-w-2xl mx-auto text-center">
-            <div class="mb-6">
-              <div class="inline-block px-6 py-3 bg-purple-500 text-white rounded-full text-xl">
-                等级 <span id="level-num">1</span> / <span id="max-levels">5</span>
-              </div>
-            </div>
-            
-            <div id="sequence-display" class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-6 min-h-[200px] flex items-center justify-center">
-              <div id="sequence-text" class="text-6xl flex gap-4 flex-wrap justify-center">
-              </div>
-            </div>
-            
-            <div class="mb-6">
-              <p id="status-text" class="text-xl text-gray-600 dark:text-gray-300">准备显示序列...</p>
-            </div>
-            
-            <div id="input-grid" class="grid grid-cols-5 gap-3 max-w-md mx-auto mb-6">
-              ${this.items.slice(0, 10).map((item, i) => `
-                <button onclick="Game.memory.selectItem(${i})" 
-                        class="aspect-square text-4xl bg-gray-100 dark:bg-gray-700 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition text-2xl"
-                        disabled>
-                  ?
-                </button>
-              `).join('')}
-            </div>
-            
-            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow">
-              <h3 class="text-xl font-bold mb-4">📊 统计</h3>
-              <div class="grid grid-cols-2 gap-4">
-                <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div class="text-sm text-gray-500">当前得分</div>
-                  <div id="current-score" class="text-3xl font-bold text-primary">0</div>
-                </div>
-                <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div class="text-sm text-gray-500">序列长度</div>
-                  <div id="sequence-length" class="text-3xl font-bold text-secondary">0</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
-      },
-      
-      init() {
-        this.level = 1;
-        this.currentScore = 0;
-        document.getElementById('max-levels').textContent = this.maxLevel;
-        this.startLevel();
-      },
-      
-      startLevel() {
-        const length = 2 + this.level;
-        this.sequence = [];
-        this.playerSequence = [];
-        
-        for (let i = 0; i < length; i++) {
-          this.sequence.push(Math.floor(Math.random() * 10));
-        }
-        
-        document.getElementById('level-num').textContent = this.level;
-        document.getElementById('sequence-length').textContent = length;
-        document.getElementById('current-score').textContent = this.currentScore;
-        
-        this.showSequence();
-      },
-      
-      showSequence() {
-        this.isShowing = true;
-        const display = document.getElementById('sequence-text');
-        const status = document.getElementById('status-text');
-        const buttons = document.querySelectorAll('#input-grid button');
-        
-        buttons.forEach(btn => btn.disabled = true);
-        status.textContent = '记住这个序列...';
-        
-        let index = 0;
-        const showNext = () => {
-          if (index > 0) {
-            display.children[index - 1].classList.remove('animate-bounce');
-          }
-          
-          if (index < this.sequence.length) {
-            display.innerHTML = this.items[this.sequence[index]];
-            display.children[0].classList.add('animate-bounce');
-            AudioManager.play('tick');
-            index++;
-            setTimeout(showNext, 800);
-          } else {
-            display.innerHTML = '';
-            status.textContent = '现在轮到你了！';
-            this.isShowing = false;
-            buttons.forEach(btn => btn.disabled = false);
-          }
-        };
-        
-        setTimeout(showNext, 500);
-      },
-      
-      selectItem(index) {
-        if (this.isShowing) return;
-        
-        this.playerSequence.push(index);
-        const buttons = document.querySelectorAll('#input-grid button');
-        
-        buttons[index].classList.add('animate-bounce');
-        AudioManager.play('click');
-        
-        setTimeout(() => {
-          buttons[index].classList.remove('animate-bounce');
-        }, 300);
-        
-        const currentIndex = this.playerSequence.length - 1;
-        
-        if (this.playerSequence[currentIndex] !== this.sequence[currentIndex]) {
-          AudioManager.play('error');
-          alert('❌ 错误！序列不对！');
-          this.end();
-          return;
-        }
-        
-        if (this.playerSequence.length === this.sequence.length) {
-          AudioManager.play('success');
-          const points = this.level * 20;
-          this.currentScore += points;
-          document.getElementById('current-score').textContent = this.currentScore;
-          
-          if (this.level >= this.maxLevel) {
-            alert(`🎉 太棒了！你完成了所有等级！+${points}分`);
-            this.end();
-          } else {
-            alert(`✅ 正确！+${points}分`);
-            this.level++;
-            setTimeout(() => this.startLevel(), 1500);
-          }
-        }
-      },
-      
-      end() {
-        AudioManager.play('victory');
-        alert(`🎊 记忆挑战结束！\n\n最终得分：${this.currentScore}分\n完成等级：${Math.min(this.level, this.maxLevel)}/${this.maxLevel}`);
-        GameEngine.updateScore(this.currentScore);
-        GameEngine.exitCurrentScreen();
-      }
-    });
+    function interactWithChicken(id) {
+      ChickenSystem.interact(id);
+    }
     
-    // 7. 新游戏：逻辑推理（适合初中生）
-    GameLibrary.register('logic-puzzle', {
-      id: 'logic-puzzle',
-      name: '逻辑推理',
-      icon: 'fa-puzzle-piece',
-      category: 'competition',
-      maxPlayers: 3,
-      duration: 60,
-      
-      puzzles: [
-        {
-          q: '有五个房子，五种颜色，五个人来自不同国家，喝不同饮料，抽不同烟，养不同宠物。英国人住红房子。瑞典人养狗。丹麦人喝茶。绿房子在白房子左边。绿房子主人喝咖啡。抽Pall Mall烟的人养鸟。黄房子主人抽Dunhill烟。住中间房子的人喝牛奶。挪威人住第一间房子。抽Blends烟的人住在养猫的人隔壁。养马的人住在抽Dunhill烟的人隔壁。抽Blue Master烟的人喝啤酒。德国人抽Prince烟。挪威人住蓝房子隔壁。抽Blends烟的人有一个喝水的邻居。\n\n问题：谁养鱼？',
-          a: ['德国人', '德国', 'german'],
-          hint: '使用排除法，逐步推理每个房子的属性'
-        },
-        {
-          q: '一个班级有30个学生。15个学生会游泳，18个学生会骑自行车，10个学生两项都会。有多少个学生两项都不会？',
-          a: ['7', '七', '7个', '七个'],
-          hint: '使用集合的容斥原理'
-        },
-        {
-          q: '一个水池有两个水管。A管单独注满需要6小时，B管单独注满需要4小时。如果两个水管同时打开，需要多少小时注满？',
-          a: ['2.4', '12/5', '2.4小时', '12/5小时'],
-          hint: '计算每小时的工作效率'
-        }
-      ],
-      
-      currentPuzzle: 0,
-      canAnswer: true,
-      
-      render() {
-        return `
-          <div class="max-w-4xl mx-auto">
-            <div class="text-center mb-6">
-              <div class="inline-block px-6 py-3 bg-primary text-white rounded-full text-xl">
-                第 <span id="puzzle-num">1</span> / <span id="total-puzzles">3</span> 题
-              </div>
-            </div>
-            
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-6">
-              <div class="mb-4 flex justify-between items-center">
-                <span class="inline-block px-3 py-1 bg-warning text-white rounded-full text-sm">难度：⭐⭐⭐⭐</span>
-                <button onclick="Game.logic.showHint()" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg text-sm hover:bg-gray-300 transition">
-                  💡 提示
-                </button>
-              </div>
-              
-              <div id="hint-text" class="hidden mb-4 p-4 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg text-yellow-800 dark:text-yellow-200"></div>
-              
-              <pre id="puzzle-text" class="text-lg whitespace-pre-wrap font-sans mb-8 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg"></pre>
-              
-              <div id="answer-section" class="text-center">
-                <input type="text" id="answer-input" 
-                       class="px-6 py-4 border-2 border-primary rounded-xl text-xl w-full max-w-lg dark:bg-gray-700 dark:border-gray-600"
-                       placeholder="输入你的答案...">
-                <button onclick="Game.logic.submitAnswer()" 
-                        class="mt-4 px-8 py-4 bg-primary text-white rounded-xl text-xl hover:bg-primary/90 transition">
-                  提交答案
-                </button>
-              </div>
-            </div>
-            
-            <div id="feedback" class="hidden text-center mb-6">
-              <div id="feedback-text" class="text-2xl font-bold p-4 rounded-lg"></div>
-            </div>
-            
-            <div class="text-center mt-6">
-              <button onclick="Game.logic.nextPuzzle()" id="next-btn" 
-                      class="hidden px-8 py-4 bg-success text-white rounded-xl text-xl">
-                下一题 →
-              </button>
-            </div>
-          </div>
-        `;
-      },
-      
-      init() {
-        document.getElementById('total-puzzles').textContent = this.puzzles.length;
-        this.showPuzzle();
-      },
-      
-      showPuzzle() {
-        const puzzle = this.puzzles[this.currentPuzzle];
-        document.getElementById('puzzle-num').textContent = this.currentPuzzle + 1;
-        document.getElementById('puzzle-text').textContent = puzzle.q;
-        document.getElementById('answer-input').value = '';
-        document.getElementById('answer-input').disabled = false;
-        document.getElementById('feedback').classList.add('hidden');
-        document.getElementById('next-btn').classList.add('hidden');
-        document.getElementById('hint-text').classList.add('hidden');
-        this.canAnswer = true;
-      },
-      
-      showHint() {
-        const puzzle = this.puzzles[this.currentPuzzle];
-        const hintText = document.getElementById('hint-text');
-        hintText.textContent = `💡 提示：${puzzle.hint}`;
-        hintText.classList.remove('hidden');
-      },
-      
-      submitAnswer() {
-        if (!this.canAnswer) return;
-        
-        const input = document.getElementById('answer-input');
-        const answer = input.value.trim().toLowerCase();
-        const correct = this.puzzles[this.currentPuzzle].a.some(a => 
-          a.toLowerCase() === answer
-        );
-        
-        this.canAnswer = false;
-        input.disabled = true;
-        
-        const feedback = document.getElementById('feedback');
-        const feedbackText = document.getElementById('feedback-text');
-        
-        if (correct) {
-          AudioManager.play('success');
-          feedbackText.textContent = '🎉 正确！+30分';
-          feedbackText.className = 'text-2xl font-bold p-4 rounded-lg bg-green-100 text-green-800';
-          GameEngine.updateScore(30);
-        } else {
-          AudioManager.play('error');
-          feedbackText.textContent = '❌ 错误！-15分';
-          feedbackText.className = 'text-2xl font-bold p-4 rounded-lg bg-red-100 text-red-800';
-          GameEngine.updateScore(-15);
-        }
-        
-        feedback.classList.remove('hidden');
-        
-        if (this.currentPuzzle < this.puzzles.length - 1) {
-          document.getElementById('next-btn').classList.remove('hidden');
-        } else {
-          setTimeout(() => this.end(), 1500);
-        }
-      },
-      
-      nextPuzzle() {
-        this.currentPuzzle++;
-        this.showPuzzle();
-      },
-      
-      end() {
-        const score = GameEngine.state.players[0].score;
-        AudioManager.play('victory');
-        alert(`🏆 逻辑推理结束！\n\n你的最终得分：${score}分\n\n${score >= 60 ? '太厉害了！逻辑大师！🧠' : score >= 30 ? '做得不错！👍' : '继续加油！💪'}`);
-        GameEngine.exitCurrentScreen();
-      }
-    });
+    function interactWithCoop() {
+      AudioManager.play('click');
+      alert('🏠 鸡舍状态：\n\n等级: 5\n容量: 20/50\n产蛋率: 85%\n\n继续升级可解锁更多功能！');
+    }
     
-    // 8. 新游戏：诗词飞花令（适合初中生）
-    GameLibrary.register('poetry-game', {
-      id: 'poetry-game',
-      name: '诗词飞花令',
-      icon: 'fa-feather-alt',
-      category: 'creative',
-      maxPlayers: 3,
-      duration: 60,
-      
-      keywords: ['春', '花', '月', '风', '雨', '山', '水', '云', '雪', '夜'],
-      currentKeyword: '',
-      usedPoems: [],
-      currentPlayer: 0,
-      round: 0,
-      maxRounds: 5,
-      
-      poems: {
-        '春': ['春眠不觉晓', '春风又绿江南岸', '春色满园关不住', '春江水暖鸭先知'],
-        '花': ['花开堪折直须折', '花间一壶酒', '花落知多少', '花重锦官城'],
-        '月': ['月落乌啼霜满天', '月出惊山鸟', '月是故乡明', '月上柳梢头'],
-        '风': ['风吹草低见牛羊', '风雨送春归', '风急天高猿啸哀', '风雪夜归人'],
-        '雨': ['雨打梨花深闭门', '雨过天青云破处', '雨中黄叶树', '雨歇南山积翠来'],
-        '山': ['山重水复疑无路', '山外青山楼外楼', '山寺桃花始盛开', '山气日夕佳'],
-        '水': ['水光潋滟晴方好', '水村山郭酒旗风', '水流心不竞', '水深波浪阔'],
-        '云': ['云深不知处', '云想衣裳花想容', '云横秦岭家何在', '云淡风轻近午天'],
-        '雪': ['雪拥蓝关马不前', '雪尽马蹄轻', '雪暗凋旗画', '雪却输梅一段香'],
-        '夜': ['夜来风雨声', '夜半钟声到客船', '夜阑卧听风吹雨', '夜深千帐灯']
-      },
-      
-      render() {
-        return `
-          <div class="max-w-4xl mx-auto">
-            <div class="text-center mb-6">
-              <div class="inline-block px-6 py-3 bg-primary text-white rounded-full text-xl">
-                第 <span id="round-num">1</span> / <span id="max-rounds">5</span> 轮
-              </div>
-            </div>
-            
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-6 text-center">
-              <h3 class="text-lg text-gray-600 dark:text-gray-300 mb-4">本轮关键词：</h3>
-              <div id="keyword-display" class="text-6xl font-bold text-primary mb-4"></div>
-              <p class="text-gray-500">请说出包含这个字的诗句</p>
-            </div>
-            
-            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 mb-6">
-              <h3 class="text-lg font-bold mb-4">已使用的诗句：</h3>
-              <div id="used-poems" class="space-y-2"></div>
-            </div>
-            
-            <div class="text-center">
-              <div class="mb-4">
-                <span class="text-lg">轮到 <span id="current-player-name" class="font-bold text-primary"></span></span>
-              </div>
-              <input type="text" id="poem-input" 
-                     class="px-6 py-4 border-2 border-primary rounded-xl text-xl w-full max-w-lg dark:bg-gray-700 dark:border-gray-600"
-                     placeholder="输入包含关键词的诗句...">
-              <div class="mt-4 space-x-4">
-                <button onclick="Game.poetry.submitPoem()" 
-                        class="px-8 py-4 bg-primary text-white rounded-xl text-xl hover:bg-primary/90 transition">
-                  提交诗句
-                </button>
-                <button onclick="Game.poetry.skipTurn()" 
-                        class="px-6 py-4 bg-gray-200 dark:bg-gray-700 rounded-xl text-lg">
-                  跳过
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-      },
-      
-      init() {
-        this.round = 0;
-        this.usedPoems = [];
-        this.currentPlayer = 0;
-        this.startRound();
-      },
-      
-      startRound() {
-        this.currentKeyword = this.keywords[Math.floor(Math.random() * this.keywords.length)];
-        document.getElementById('keyword-display').textContent = this.currentKeyword;
-        document.getElementById('round-num').textContent = this.round + 1;
-        document.getElementById('max-rounds').textContent = this.maxRounds;
-        document.getElementById('current-player-name').textContent = GameEngine.state.players[this.currentPlayer].name;
-        document.getElementById('poem-input').value = '';
-        this.updateUsedPoems();
-      },
-      
-      updateUsedPoems() {
-        const usedPoemsEl = document.getElementById('used-poems');
-        if (this.usedPoems.length === 0) {
-          usedPoemsEl.innerHTML = '<p class="text-gray-400">暂无</p>';
-        } else {
-          usedPoemsEl.innerHTML = this.usedPoems.map(poem => `
-            <div class="p-2 bg-gray-50 dark:bg-gray-700 rounded">${poem}</div>
-          `).join('');
-        }
-      },
-      
-      submitPoem() {
-        const input = document.getElementById('poem-input');
-        const poem = input.value.trim();
-        
-        if (!poem) {
-          alert('请输入诗句！');
-          return;
-        }
-        
-        if (!poem.includes(this.currentKeyword)) {
-          alert(`诗句中必须包含"${this.currentKeyword}"字！`);
-          return;
-        }
-        
-        if (this.usedPoems.includes(poem)) {
-          alert('这句诗已经用过了！');
-          return;
-        }
-        
-        AudioManager.play('success');
-        this.usedPoems.push(poem);
-        GameEngine.updateScore(20);
-        
-        this.currentPlayer = (this.currentPlayer + 1) % 3;
-        
-        if (this.currentPlayer === 0) {
-          this.round++;
-          if (this.round >= this.maxRounds) {
-            this.end();
-            return;
-          }
-        }
-        
-        this.startRound();
-      },
-      
-      skipTurn() {
-        this.currentPlayer = (this.currentPlayer + 1) % 3;
-        
-        if (this.currentPlayer === 0) {
-          this.round++;
-          if (this.round >= this.maxRounds) {
-            this.end();
-            return;
-          }
-        }
-        
-        this.startRound();
-      },
-      
-      end() {
-        const score = GameEngine.state.players[0].score;
-        AudioManager.play('victory');
-        alert(`🎊 诗词飞花令结束！\n\n你的最终得分：${score}分\n\n${score >= 60 ? '太厉害了！诗词达人！📚' : score >= 40 ? '做得不错！👍' : '继续加油！💪'}`);
-        GameEngine.exitCurrentScreen();
-      }
-    });
+    function buildStructure(type) {
+      BuildSystem.build(type);
+    }
     
-    // 全局游戏引用
-    window.Game = {
-      draw: GameLibrary.get('draw-guess'),
-      trivia: GameLibrary.get('trivia'),
-      story: GameLibrary.get('story-chain'),
-      wheel: GameLibrary.get('fortune-wheel'),
-      reaction: GameLibrary.get('reaction'),
-      memory: GameLibrary.get('memory'),
-      logic: GameLibrary.get('logic-puzzle'),
-      poetry: GameLibrary.get('poetry-game')
-    };
+    function exploreArea(areaId) {
+      WorldSystem.explore(areaId);
+    }
     
-    // 初始化
+    function spinWheel() {
+      WheelSystem.spin();
+    }
+    
+    function addExploreLog(message) {
+      const container = document.getElementById('explore-logs');
+      if (!container) return;
+      
+      const log = document.createElement('div');
+      log.className = 'flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg fade-in';
+      log.innerHTML = `
+        <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center">🐔</div>
+        <div class="flex-1">
+          <div class="font-bold">探险记录</div>
+          <div class="text-sm text-gray-500">${message}</div>
+        </div>
+        <div class="text-sm text-gray-400">刚刚</div>
+      `;
+      
+      container.insertBefore(log, container.firstChild);
+    }
+    
+    // ==================== 初始化 ====================
     document.addEventListener('DOMContentLoaded', () => {
       AudioManager.init();
-      GameEngine.init();
-      PetSystem.init();
+      ChickenSystem.renderChickenList();
+      updateResourceDisplay();
+      CollaborationSystem.init();
       
+      // 加载设置
+      const settings = localStorage.getItem('gameSettings');
+      if (settings) {
+        const parsed = JSON.parse(settings);
+        if (parsed.darkMode) {
+          document.body.classList.add('dark-mode');
+        }
+      }
+      
+      // 恢复音频上下文
       document.addEventListener('click', () => {
         if (AudioManager.context && AudioManager.context.state === 'suspended') {
           AudioManager.context.resume();
