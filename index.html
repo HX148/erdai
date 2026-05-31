@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta name="description" content="三人行 - 创新的三人联机游戏平台，支持多种游戏模式，随时随地和朋友一起玩！">
-  <meta name="keywords" content="联机游戏, 三人游戏, 网页游戏, 多人游戏, 休闲游戏">
-  <meta name="author" content="三人行团队">
+  <meta name="description" content="聚友联机 - 多人联机游戏平台，支持多种游戏模式，随时随地和朋友一起玩！">
+  <meta name="keywords" content="联机游戏, 多人游戏, 网页游戏, 休闲游戏">
+  <meta name="author" content="聚友联机团队">
   <meta name="theme-color" content="#6366F1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   
-  <meta property="og:title" content="三人行 - 三人联机游戏平台">
-  <meta property="og:description" content="创新的三人联机游戏平台，随时随地和朋友一起玩！">
+  <meta property="og:title" content="聚友联机 - 多人联机游戏平台">
+  <meta property="og:description" content="多人联机游戏平台，随时随地和朋友一起玩！">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="zh_CN">
   
-  <title>三人行 - 三人联机游戏平台</title>
+  <title>聚友联机 - 多人联机游戏平台</title>
   
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -120,6 +120,24 @@
       box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
     }
     
+    .pet-container {
+      animation: petFloat 3s ease-in-out infinite;
+    }
+    
+    @keyframes petFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .pet-happy {
+      animation: petHappy 0.5s ease-in-out;
+    }
+    
+    @keyframes petHappy {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+    
     @media (max-width: 768px) {
       .text-4xl {
         font-size: 2.5rem;
@@ -157,23 +175,116 @@
       outline: 3px solid var(--primary);
       outline-offset: 2px;
     }
+    
+    .room-card {
+      transition: all 0.3s ease;
+    }
+    
+    .room-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+    
+    .player-avatar {
+      transition: all 0.3s ease;
+    }
+    
+    .player-avatar:hover {
+      transform: scale(1.1);
+    }
   </style>
 </head>
 <body>
   <div id="app" class="min-h-screen flex flex-col">
+    <!-- 首页 -->
     <section id="home-page" class="flex-1 fade-in">
       <header class="py-6 px-4">
         <div class="container mx-auto text-center">
           <h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary via-purple-500 to-secondary bg-clip-text text-transparent">
-            🎮 三人行
+            🎮 聚友联机
           </h1>
           <p class="text-lg mt-3 text-gray-600 dark:text-gray-300">
-            创新的三人联机游戏平台，随时随地和朋友一起玩！
+            多人联机游戏平台，随时随地和朋友一起玩！
           </p>
         </div>
       </header>
       
       <main class="container mx-auto px-4 py-8">
+        <!-- 联机房间系统 -->
+        <div id="room-system" class="mb-8">
+          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+            <h2 class="text-2xl font-bold mb-4 text-center">🏠 游戏房间</h2>
+            
+            <div id="room-login" class="text-center">
+              <div class="mb-4">
+                <input type="text" id="player-name" placeholder="输入你的昵称" 
+                       class="px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-lg w-full max-w-md dark:bg-gray-700">
+              </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-md mx-auto">
+                <button onclick="createRoom()" class="px-6 py-4 bg-primary text-white rounded-xl text-lg font-bold hover:bg-primary/90 transition">
+                  <i class="fas fa-plus-circle mr-2"></i>创建房间
+                </button>
+                <button onclick="showJoinRoom()" class="px-6 py-4 bg-secondary text-white rounded-xl text-lg font-bold hover:bg-secondary/90 transition">
+                  <i class="fas fa-sign-in-alt mr-2"></i>加入房间
+                </button>
+              </div>
+            </div>
+            
+            <div id="join-room-form" class="hidden text-center mt-4">
+              <input type="text" id="room-code" placeholder="输入房间号（6位数字）" 
+                     class="px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-lg w-full max-w-md mb-4 dark:bg-gray-700">
+              <div class="flex gap-4 justify-center">
+                <button onclick="joinRoom()" class="px-6 py-3 bg-success text-white rounded-lg font-bold">
+                  确认加入
+                </button>
+                <button onclick="hideJoinRoom()" class="px-6 py-3 bg-gray-200 dark:bg-gray-700 rounded-lg">
+                  取消
+                </button>
+              </div>
+            </div>
+            
+            <div id="room-info" class="hidden mt-4">
+              <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-4">
+                <div class="flex justify-between items-center mb-4">
+                  <div>
+                    <span class="text-gray-600 dark:text-gray-300">房间号：</span>
+                    <span id="current-room-code" class="text-2xl font-bold text-primary"></span>
+                  </div>
+                  <button onclick="leaveRoom()" class="px-4 py-2 bg-danger text-white rounded-lg text-sm">
+                    退出房间
+                  </button>
+                </div>
+                
+                <div id="players-list" class="flex gap-4 justify-center flex-wrap">
+                  <!-- 玩家列表将在这里显示 -->
+                </div>
+                
+                <div class="mt-4 text-center">
+                  <button onclick="startMultiplayerGame()" id="start-game-btn" class="px-8 py-4 bg-success text-white rounded-xl text-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed">
+                    开始游戏
+                  </button>
+                  <p id="waiting-text" class="mt-2 text-gray-500">等待其他玩家加入...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 宠物互动区域 -->
+        <div id="pet-area" class="mb-8 text-center">
+          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+            <h2 class="text-2xl font-bold mb-4">🐾 萌宠互动</h2>
+            <div id="pet-container" class="pet-container inline-block cursor-pointer" onclick="interactWithPet()">
+              <div class="text-8xl mb-2">🐱</div>
+              <div id="pet-happiness" class="text-lg text-gray-600 dark:text-gray-300">
+                快乐值: <span id="happiness-value">50</span>/100
+              </div>
+            </div>
+            <p class="mt-4 text-gray-500">点击宠物和它互动！多人同时点击效果更佳！</p>
+          </div>
+        </div>
+        
         <h2 class="text-2xl font-bold mb-6 text-center">🎯 选择游戏模式</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           <div class="card bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer" onclick="selectMode('free')" role="button" tabindex="0" aria-label="自由模式">
@@ -194,7 +305,7 @@
                 <i class="fas fa-trophy text-3xl text-white"></i>
               </div>
               <h3 class="text-xl font-bold text-center mb-2">闯关模式</h3>
-              <p class="text-gray-600 text-center dark:text-gray-300">挑战4种类型，解锁成就</p>
+              <p class="text-gray-600 text-center dark:text-gray-300">挑战不同类型，解锁成就</p>
             </div>
           </div>
           
@@ -231,10 +342,11 @@
       
       <footer class="py-6 text-center text-sm text-gray-500">
         <p>支持手机、平板、电脑 📱💻🖥️</p>
-        <p class="mt-2">© 2026 三人行游戏平台</p>
+        <p class="mt-2">© 2026 聚友联机游戏平台</p>
       </footer>
     </section>
     
+    <!-- 游戏页面 -->
     <section id="game-page" class="hidden flex-1">
       <header class="bg-white dark:bg-gray-800 shadow-md py-4 px-4">
         <div class="container mx-auto flex items-center justify-between">
@@ -254,6 +366,7 @@
   <div id="modal-container"></div>
   
   <script>
+    // ==================== 音效管理系统 ====================
     const AudioManager = {
       context: null,
       enabled: true,
@@ -304,14 +417,15 @@
       }
     };
     
+    // ==================== 游戏引擎 ====================
     const GameEngine = {
       state: {
         mode: null,
         currentGame: null,
         players: [
-          { id: 1, name: '玩家1', score: 0, avatar: 1 },
-          { id: 2, name: '玩家2', score: 0, avatar: 2 },
-          { id: 3, name: '玩家3', score: 0, avatar: 3 }
+          { id: 1, name: '玩家1', score: 0, avatar: 1, isHost: true },
+          { id: 2, name: '玩家2', score: 0, avatar: 2, isHost: false },
+          { id: 3, name: '玩家3', score: 0, avatar: 3, isHost: false }
         ],
         currentRound: 0,
         totalRounds: 5,
@@ -391,6 +505,7 @@
       }
     };
     
+    // ==================== 游戏库 ====================
     const GameLibrary = {
       games: new Map(),
       
@@ -407,11 +522,195 @@
       }
     };
     
+    // ==================== 房间系统 ====================
+    const RoomSystem = {
+      currentRoom: null,
+      playerName: '',
+      isHost: false,
+      
+      generateRoomCode() {
+        return Math.floor(100000 + Math.random() * 900000).toString();
+      },
+      
+      createRoom(playerName) {
+        this.playerName = playerName;
+        this.isHost = true;
+        this.currentRoom = {
+          code: this.generateRoomCode(),
+          players: [{ name: playerName, isHost: true, id: 1 }],
+          status: 'waiting'
+        };
+        this.updateRoomUI();
+        return this.currentRoom;
+      },
+      
+      joinRoom(roomCode, playerName) {
+        this.playerName = playerName;
+        this.isHost = false;
+        this.currentRoom = {
+          code: roomCode,
+          players: [
+            { name: '房主', isHost: true, id: 1 },
+            { name: playerName, isHost: false, id: 2 }
+          ],
+          status: 'waiting'
+        };
+        this.updateRoomUI();
+        return this.currentRoom;
+      },
+      
+      leaveRoom() {
+        this.currentRoom = null;
+        this.isHost = false;
+        this.updateRoomUI();
+      },
+      
+      updateRoomUI() {
+        const roomLogin = document.getElementById('room-login');
+        const joinRoomForm = document.getElementById('join-room-form');
+        const roomInfo = document.getElementById('room-info');
+        
+        if (this.currentRoom) {
+          roomLogin.classList.add('hidden');
+          joinRoomForm.classList.add('hidden');
+          roomInfo.classList.remove('hidden');
+          
+          document.getElementById('current-room-code').textContent = this.currentRoom.code;
+          
+          const playersList = document.getElementById('players-list');
+          playersList.innerHTML = this.currentRoom.players.map((player, index) => `
+            <div class="player-avatar flex flex-col items-center">
+              <div class="w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white text-xl font-bold">
+                ${player.name.charAt(0)}
+              </div>
+              <span class="text-sm mt-1 ${player.isHost ? 'text-primary font-bold' : ''}">${player.name} ${player.isHost ? '(房主)' : ''}</span>
+            </div>
+          `).join('');
+          
+          const startBtn = document.getElementById('start-game-btn');
+          const waitingText = document.getElementById('waiting-text');
+          
+          if (this.isHost) {
+            startBtn.disabled = false;
+            startBtn.classList.remove('hidden');
+            waitingText.classList.add('hidden');
+          } else {
+            startBtn.classList.add('hidden');
+            waitingText.classList.remove('hidden');
+            waitingText.textContent = '等待房主开始游戏...';
+          }
+        } else {
+          roomLogin.classList.remove('hidden');
+          joinRoomForm.classList.add('hidden');
+          roomInfo.classList.add('hidden');
+        }
+      }
+    };
+    
+    // ==================== 宠物系统 ====================
+    const PetSystem = {
+      happiness: 50,
+      pets: ['🐱', '🐶', '🐰', '🐼', '🦊', '🐨', '🐯', '🦁'],
+      currentPet: 0,
+      
+      init() {
+        this.currentPet = Math.floor(Math.random() * this.pets.length);
+        this.updatePetDisplay();
+      },
+      
+      updatePetDisplay() {
+        const petContainer = document.getElementById('pet-container');
+        if (petContainer) {
+          petContainer.querySelector('.text-8xl').textContent = this.pets[this.currentPet];
+        }
+        const happinessValue = document.getElementById('happiness-value');
+        if (happinessValue) {
+          happinessValue.textContent = this.happiness;
+        }
+      },
+      
+      interact() {
+        this.happiness = Math.min(100, this.happiness + 5);
+        AudioManager.play('success');
+        this.updatePetDisplay();
+        
+        const petContainer = document.getElementById('pet-container');
+        if (petContainer) {
+          petContainer.classList.add('pet-happy');
+          setTimeout(() => {
+            petContainer.classList.remove('pet-happy');
+          }, 500);
+        }
+        
+        if (this.happiness >= 100) {
+          setTimeout(() => {
+            alert('🎉 宠物超级开心！它决定给你一个惊喜！');
+            this.happiness = 50;
+            this.currentPet = Math.floor(Math.random() * this.pets.length);
+            this.updatePetDisplay();
+          }, 600);
+        }
+      }
+    };
+    
+    // ==================== 全局函数 ====================
     function toggleDarkMode() {
       AudioManager.play('click');
       document.body.classList.toggle('dark-mode');
       const isDark = document.body.classList.contains('dark-mode');
       localStorage.setItem('gameSettings', JSON.stringify({ darkMode: isDark }));
+    }
+    
+    function createRoom() {
+      const playerName = document.getElementById('player-name').value.trim();
+      if (!playerName) {
+        alert('请输入你的昵称！');
+        return;
+      }
+      
+      AudioManager.play('success');
+      RoomSystem.createRoom(playerName);
+    }
+    
+    function showJoinRoom() {
+      const playerName = document.getElementById('player-name').value.trim();
+      if (!playerName) {
+        alert('请输入你的昵称！');
+        return;
+      }
+      
+      document.getElementById('join-room-form').classList.remove('hidden');
+    }
+    
+    function hideJoinRoom() {
+      document.getElementById('join-room-form').classList.add('hidden');
+    }
+    
+    function joinRoom() {
+      const roomCode = document.getElementById('room-code').value.trim();
+      const playerName = document.getElementById('player-name').value.trim();
+      
+      if (!roomCode || roomCode.length !== 6) {
+        alert('请输入6位房间号！');
+        return;
+      }
+      
+      AudioManager.play('success');
+      RoomSystem.joinRoom(roomCode, playerName);
+    }
+    
+    function leaveRoom() {
+      AudioManager.play('click');
+      RoomSystem.leaveRoom();
+    }
+    
+    function startMultiplayerGame() {
+      AudioManager.play('success');
+      alert('🎮 游戏开始！');
+    }
+    
+    function interactWithPet() {
+      PetSystem.interact();
     }
     
     function selectMode(modeId) {
@@ -476,6 +775,9 @@
       GameEngine.exitCurrentScreen();
     }
     
+    // ==================== 游戏注册 ====================
+    
+    // 1. 你画我猜（修复版）
     GameLibrary.register('draw-guess', {
       id: 'draw-guess',
       name: '你画我猜',
@@ -489,8 +791,9 @@
       currentPlayer: 1,
       phase: 'draw',
       currentWord: '',
+      timerInterval: null,
       
-      words: ['猫', '狗', '太阳', '月亮', '星星', '房子', '汽车', '飞机', '树', '花', '山', '水', '火', '风', '雨', '彩虹', '小鸟', '书本', '桌子', '手机'],
+      words: ['猫', '狗', '太阳', '月亮', '星星', '房子', '汽车', '飞机', '树', '花', '山', '水', '火', '风', '雨', '彩虹', '小鸟', '书本', '桌子', '手机', '电脑', '键盘', '鼠标', '电视', '冰箱', '空调', '自行车', '火车', '轮船', '火箭'],
       
       render() {
         return `
@@ -511,16 +814,18 @@
             </div>
             
             <div class="flex flex-wrap gap-2 justify-center mb-4">
-              <button onclick="Game.draw.setColor('#000000')" class="w-10 h-10 rounded-full bg-black border-2 border-gray-300"></button>
-              <button onclick="Game.draw.setColor('#EF4444')" class="w-10 h-10 rounded-full bg-red-500 border-2"></button>
-              <button onclick="Game.draw.setColor('#3B82F6')" class="w-10 h-10 rounded-full bg-blue-500 border-2"></button>
-              <button onclick="Game.draw.setColor('#10B981')" class="w-10 h-10 rounded-full bg-green-500 border-2"></button>
-              <button onclick="Game.draw.setColor('#F59E0B')" class="w-10 h-10 rounded-full bg-yellow-500 border-2"></button>
-              <button onclick="Game.draw.setColor('#FFFFFF')" class="w-10 h-10 rounded-full bg-white border-2">🧹</button>
-              <button onclick="Game.draw.setBrushSize(2)" class="px-3 py-2 bg-gray-200 dark:bg-gray-700 rounded">细</button>
-              <button onclick="Game.draw.setBrushSize(5)" class="px-3 py-2 bg-gray-200 dark:bg-gray-700 rounded">中</button>
-              <button onclick="Game.draw.setBrushSize(10)" class="px-3 py-2 bg-gray-200 dark:bg-gray-700 rounded">粗</button>
-              <button onclick="Game.draw.clear()" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded">清除</button>
+              <button onclick="Game.draw.setColor('#000000')" class="w-10 h-10 rounded-full bg-black border-2 border-gray-300 hover:scale-110 transition"></button>
+              <button onclick="Game.draw.setColor('#EF4444')" class="w-10 h-10 rounded-full bg-red-500 border-2 hover:scale-110 transition"></button>
+              <button onclick="Game.draw.setColor('#3B82F6')" class="w-10 h-10 rounded-full bg-blue-500 border-2 hover:scale-110 transition"></button>
+              <button onclick="Game.draw.setColor('#10B981')" class="w-10 h-10 rounded-full bg-green-500 border-2 hover:scale-110 transition"></button>
+              <button onclick="Game.draw.setColor('#F59E0B')" class="w-10 h-10 rounded-full bg-yellow-500 border-2 hover:scale-110 transition"></button>
+              <button onclick="Game.draw.setColor('#8B5CF6')" class="w-10 h-10 rounded-full bg-purple-500 border-2 hover:scale-110 transition"></button>
+              <button onclick="Game.draw.setColor('#EC4899')" class="w-10 h-10 rounded-full bg-pink-500 border-2 hover:scale-110 transition"></button>
+              <button onclick="Game.draw.setColor('#FFFFFF')" class="w-10 h-10 rounded-full bg-white border-2 border-gray-400 hover:scale-110 transition" title="橡皮擦">🧹</button>
+              <button onclick="Game.draw.setBrushSize(2)" class="px-3 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 transition">细</button>
+              <button onclick="Game.draw.setBrushSize(5)" class="px-3 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 transition">中</button>
+              <button onclick="Game.draw.setBrushSize(10)" class="px-3 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 transition">粗</button>
+              <button onclick="Game.draw.clear()" class="px-4 py-2 bg-danger text-white rounded hover:bg-danger/90 transition">清除画布</button>
             </div>
             
             <div id="guess-section" class="hidden text-center">
@@ -534,7 +839,7 @@
             
             <div class="text-center mt-4">
               <button onclick="Game.draw.nextPhase()" id="next-phase-btn"
-                      class="px-6 py-3 bg-success text-white rounded-lg">
+                      class="px-6 py-3 bg-success text-white rounded-lg hover:bg-success/90 transition">
                 完成绘画 → 轮到玩家2
               </button>
             </div>
@@ -633,6 +938,7 @@
       },
       
       clear() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.fillStyle = 'white';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
       },
@@ -713,25 +1019,26 @@
       }
     });
     
+    // 2. 知识达人（重新设计，增加难度）
     GameLibrary.register('trivia', {
       id: 'trivia',
-      name: '知识抢答',
+      name: '知识达人',
       icon: 'fa-brain',
       category: 'competition',
       maxPlayers: 3,
       duration: 60,
       
       questions: [
-        { q: '中国的首都是哪里？', a: ['北京', 'beijing'] },
-        { q: '1 + 1 = ?', a: ['2', '二'] },
-        { q: '太阳从哪边升起？', a: ['东', '东方', 'east'] },
-        { q: '一年有多少个月？', a: ['12', '十二', '一十二'] },
-        { q: '水的化学式是什么？', a: ['H2O', 'h2o'] },
-        { q: '世界上最长的河流是？', a: ['尼罗河', 'nile'] },
-        { q: '苹果是什么颜色？', a: ['红色', '红', '青', '绿'] },
-        { q: '天上一共有多少颗星星？', a: ['无数', '数不清', '很多'] },
-        { q: '地球是什么形状？', a: ['圆形', '球形', '圆的'] },
-        { q: '一年有几个季节？', a: ['4', '四', '四个'] }
+        { q: '量子力学中，海森堡不确定性原理指出，无法同时精确测量粒子的哪两个物理量？', a: ['位置和动量', 'position and momentum', '位置动量'] },
+        { q: 'DNA的双螺旋结构是由哪两位科学家在1953年发现的？', a: ['沃森和克里克', 'watson and crick', 'watson crick'] },
+        { q: '在化学元素周期表中，原子序数为79的元素是什么？', a: ['金', 'gold', 'au'] },
+        { q: '相对论中，E=mc²的c代表什么？', a: ['光速', '光速', 'speed of light'] },
+        { q: '人体中最大的器官是什么？', a: ['皮肤', 'skin'] },
+        { q: '光合作用的主要产物是什么？', a: ['葡萄糖和氧气', 'glucose and oxygen', '葡萄糖氧气'] },
+        { q: '三角函数中，sin²x + cos²x 的值等于多少？', a: ['1', '一'] },
+        { q: '世界上第一台电子计算机ENIAC诞生于哪一年？', a: ['1946', '一九四六'] },
+        { q: '在Python编程中，列表推导式的语法是什么？', a: ['[x for x in range(10)]', '列表推导式'] },
+        { q: '化学中，pH值等于7表示什么？', a: ['中性', 'neutral'] }
       ],
       
       currentQuestion: 0,
@@ -747,7 +1054,10 @@
             </div>
             
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-6">
-              <h2 id="question-text" class="text-2xl md:text-3xl font-bold text-center mb-8">
+              <div class="mb-4">
+                <span class="inline-block px-3 py-1 bg-warning text-white rounded-full text-sm">难度：⭐⭐⭐</span>
+              </div>
+              <h2 id="question-text" class="text-xl md:text-2xl font-bold text-center mb-8">
                 加载中...
               </h2>
               
@@ -846,11 +1156,12 @@
       end() {
         const score = GameEngine.state.players[0].score;
         AudioManager.play('victory');
-        alert(`🏆 游戏结束！\n\n你的最终得分：${score}分\n\n${score >= 60 ? '太厉害了！🎉' : score >= 40 ? '做得不错！👍' : '继续加油！💪'}`);
+        alert(`🏆 游戏结束！\n\n你的最终得分：${score}分\n\n${score >= 60 ? '太厉害了！知识达人！🎓' : score >= 40 ? '做得不错！👍' : '继续加油！💪'}`);
         GameEngine.exitCurrentScreen();
       }
     });
     
+    // 3. 故事接龙
     GameLibrary.register('story-chain', {
       id: 'story-chain',
       name: '故事接龙',
@@ -860,11 +1171,11 @@
       duration: 60,
       
       openings: [
-        '从前有一只小狐狸住在森林里...',
-        '在一个遥远的星系，有一艘飞船...',
-        '小明打开了一扇神秘的门...',
-        '夜空中最亮的星星突然坠落...',
-        '老爷爷在海边捡到了一个漂流瓶...'
+        '在一个被遗忘的古老图书馆里，一本尘封的魔法书突然开始发光...',
+        '深夜的实验室中，科学家终于完成了那个改变世界的实验，但结果出乎意料...',
+        '在遥远的未来，人类发现了通往平行宇宙的门，但第一个穿越的人带回了一个惊人的消息...',
+        '古老的预言说，当三颗星星连成一线时，沉睡的巨龙将会苏醒...',
+        '在一个普通的早晨，主角醒来发现自己拥有了读心术的能力...'
       ],
       
       currentOpening: '',
@@ -977,6 +1288,7 @@
       }
     });
     
+    // 4. 命运转盘
     GameLibrary.register('fortune-wheel', {
       id: 'fortune-wheel',
       name: '命运转盘',
@@ -987,7 +1299,7 @@
       
       challenges: [
         { type: 'draw-guess', name: '你画我猜', difficulty: 1, icon: 'fa-palette' },
-        { type: 'trivia', name: '知识抢答', difficulty: 1, icon: 'fa-brain' },
+        { type: 'trivia', name: '知识达人', difficulty: 2, icon: 'fa-brain' },
         { type: 'story-chain', name: '故事接龙', difficulty: 2, icon: 'fa-book-open' },
         { type: 'reaction', name: '反应挑战', difficulty: 1, icon: 'fa-bolt' },
         { type: 'memory', name: '记忆挑战', difficulty: 2, icon: 'fa-memory' }
@@ -1120,6 +1432,7 @@
       }
     });
     
+    // 5. 反应挑战
     GameLibrary.register('reaction', {
       id: 'reaction',
       name: '反应挑战',
@@ -1144,7 +1457,7 @@
               </div>
             </div>
             
-            <div id="game-area" class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-12 mb-6 min-h-[300px] flex items-center justify-center cursor-pointer">
+            <div id="game-area" class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-12 mb-6 min-h-[300px] flex items-center justify-center cursor-pointer select-none">
               <div id="status-text" class="text-4xl font-bold">
                 点击开始测试
               </div>
@@ -1169,7 +1482,7 @@
             </div>
             
             <button onclick="Game.reaction.reset()" 
-                    class="mt-6 px-8 py-4 bg-gray-200 dark:bg-gray-700 rounded-xl text-lg">
+                    class="mt-6 px-8 py-4 bg-gray-200 dark:bg-gray-700 rounded-xl text-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition">
               🔄 重新开始
             </button>
           </div>
@@ -1192,7 +1505,7 @@
         if (this.phase === 'waiting') {
           AudioManager.play('countdown');
           this.phase = 'ready';
-          gameArea.className = 'bg-yellow-100 dark:bg-yellow-900 rounded-2xl shadow-xl p-12 mb-6 min-h-[300px] flex items-center justify-center cursor-pointer';
+          gameArea.className = 'bg-yellow-100 dark:bg-yellow-900 rounded-2xl shadow-xl p-12 mb-6 min-h-[300px] flex items-center justify-center cursor-pointer select-none';
           statusText.textContent = '准备...';
           statusText.className = 'text-4xl font-bold text-yellow-600';
           
@@ -1201,7 +1514,7 @@
         } else if (this.phase === 'ready') {
           clearTimeout(this.waitTimeout);
           AudioManager.play('error');
-          gameArea.className = 'bg-red-100 dark:bg-red-900 rounded-2xl shadow-xl p-12 mb-6 min-h-[300px] flex items-center justify-center cursor-pointer';
+          gameArea.className = 'bg-red-100 dark:bg-red-900 rounded-2xl shadow-xl p-12 mb-6 min-h-[300px] flex items-center justify-center cursor-pointer select-none';
           statusText.textContent = '太早了！等待绿色...';
           statusText.className = 'text-4xl font-bold text-red-600';
           
@@ -1219,7 +1532,7 @@
           this.currentScore += points;
           
           AudioManager.play('success');
-          gameArea.className = 'bg-green-100 dark:bg-green-900 rounded-2xl shadow-xl p-12 mb-6 min-h-[300px] flex items-center justify-center cursor-pointer';
+          gameArea.className = 'bg-green-100 dark:bg-green-900 rounded-2xl shadow-xl p-12 mb-6 min-h-[300px] flex items-center justify-center cursor-pointer select-none';
           statusText.textContent = `${reactionTime}ms！+${points}分`;
           statusText.className = 'text-4xl font-bold text-green-600';
           
@@ -1240,7 +1553,7 @@
         this.phase = 'go';
         this.startTime = Date.now();
         
-        gameArea.className = 'bg-green-100 dark:bg-green-900 rounded-2xl shadow-xl p-12 mb-6 min-h-[300px] flex items-center justify-center cursor-pointer';
+        gameArea.className = 'bg-green-100 dark:bg-green-900 rounded-2xl shadow-xl p-12 mb-6 min-h-[300px] flex items-center justify-center cursor-pointer select-none';
         statusText.textContent = '点击！';
         statusText.className = 'text-6xl font-bold text-green-600 animate-pulse';
         
@@ -1253,7 +1566,7 @@
         document.getElementById('round-num').textContent = Math.min(this.round + 1, this.maxRounds);
         
         this.phase = 'waiting';
-        gameArea.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-12 mb-6 min-h-[300px] flex items-center justify-center cursor-pointer';
+        gameArea.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-12 mb-6 min-h-[300px] flex items-center justify-center cursor-pointer select-none';
         statusText.textContent = '点击开始测试';
         statusText.className = 'text-4xl font-bold';
       },
@@ -1282,6 +1595,7 @@
       }
     });
     
+    // 6. 记忆挑战
     GameLibrary.register('memory', {
       id: 'memory',
       name: '记忆挑战',
@@ -1444,9 +1758,329 @@
       }
     });
     
+    // 7. 新游戏：逻辑推理（适合初中生）
+    GameLibrary.register('logic-puzzle', {
+      id: 'logic-puzzle',
+      name: '逻辑推理',
+      icon: 'fa-puzzle-piece',
+      category: 'competition',
+      maxPlayers: 3,
+      duration: 60,
+      
+      puzzles: [
+        {
+          q: '有五个房子，五种颜色，五个人来自不同国家，喝不同饮料，抽不同烟，养不同宠物。英国人住红房子。瑞典人养狗。丹麦人喝茶。绿房子在白房子左边。绿房子主人喝咖啡。抽Pall Mall烟的人养鸟。黄房子主人抽Dunhill烟。住中间房子的人喝牛奶。挪威人住第一间房子。抽Blends烟的人住在养猫的人隔壁。养马的人住在抽Dunhill烟的人隔壁。抽Blue Master烟的人喝啤酒。德国人抽Prince烟。挪威人住蓝房子隔壁。抽Blends烟的人有一个喝水的邻居。\n\n问题：谁养鱼？',
+          a: ['德国人', '德国', 'german'],
+          hint: '使用排除法，逐步推理每个房子的属性'
+        },
+        {
+          q: '一个班级有30个学生。15个学生会游泳，18个学生会骑自行车，10个学生两项都会。有多少个学生两项都不会？',
+          a: ['7', '七', '7个', '七个'],
+          hint: '使用集合的容斥原理'
+        },
+        {
+          q: '一个水池有两个水管。A管单独注满需要6小时，B管单独注满需要4小时。如果两个水管同时打开，需要多少小时注满？',
+          a: ['2.4', '12/5', '2.4小时', '12/5小时'],
+          hint: '计算每小时的工作效率'
+        }
+      ],
+      
+      currentPuzzle: 0,
+      canAnswer: true,
+      
+      render() {
+        return `
+          <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-6">
+              <div class="inline-block px-6 py-3 bg-primary text-white rounded-full text-xl">
+                第 <span id="puzzle-num">1</span> / <span id="total-puzzles">3</span> 题
+              </div>
+            </div>
+            
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-6">
+              <div class="mb-4 flex justify-between items-center">
+                <span class="inline-block px-3 py-1 bg-warning text-white rounded-full text-sm">难度：⭐⭐⭐⭐</span>
+                <button onclick="Game.logic.showHint()" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg text-sm hover:bg-gray-300 transition">
+                  💡 提示
+                </button>
+              </div>
+              
+              <div id="hint-text" class="hidden mb-4 p-4 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg text-yellow-800 dark:text-yellow-200"></div>
+              
+              <pre id="puzzle-text" class="text-lg whitespace-pre-wrap font-sans mb-8 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg"></pre>
+              
+              <div id="answer-section" class="text-center">
+                <input type="text" id="answer-input" 
+                       class="px-6 py-4 border-2 border-primary rounded-xl text-xl w-full max-w-lg dark:bg-gray-700 dark:border-gray-600"
+                       placeholder="输入你的答案...">
+                <button onclick="Game.logic.submitAnswer()" 
+                        class="mt-4 px-8 py-4 bg-primary text-white rounded-xl text-xl hover:bg-primary/90 transition">
+                  提交答案
+                </button>
+              </div>
+            </div>
+            
+            <div id="feedback" class="hidden text-center mb-6">
+              <div id="feedback-text" class="text-2xl font-bold p-4 rounded-lg"></div>
+            </div>
+            
+            <div class="text-center mt-6">
+              <button onclick="Game.logic.nextPuzzle()" id="next-btn" 
+                      class="hidden px-8 py-4 bg-success text-white rounded-xl text-xl">
+                下一题 →
+              </button>
+            </div>
+          </div>
+        `;
+      },
+      
+      init() {
+        document.getElementById('total-puzzles').textContent = this.puzzles.length;
+        this.showPuzzle();
+      },
+      
+      showPuzzle() {
+        const puzzle = this.puzzles[this.currentPuzzle];
+        document.getElementById('puzzle-num').textContent = this.currentPuzzle + 1;
+        document.getElementById('puzzle-text').textContent = puzzle.q;
+        document.getElementById('answer-input').value = '';
+        document.getElementById('answer-input').disabled = false;
+        document.getElementById('feedback').classList.add('hidden');
+        document.getElementById('next-btn').classList.add('hidden');
+        document.getElementById('hint-text').classList.add('hidden');
+        this.canAnswer = true;
+      },
+      
+      showHint() {
+        const puzzle = this.puzzles[this.currentPuzzle];
+        const hintText = document.getElementById('hint-text');
+        hintText.textContent = `💡 提示：${puzzle.hint}`;
+        hintText.classList.remove('hidden');
+      },
+      
+      submitAnswer() {
+        if (!this.canAnswer) return;
+        
+        const input = document.getElementById('answer-input');
+        const answer = input.value.trim().toLowerCase();
+        const correct = this.puzzles[this.currentPuzzle].a.some(a => 
+          a.toLowerCase() === answer
+        );
+        
+        this.canAnswer = false;
+        input.disabled = true;
+        
+        const feedback = document.getElementById('feedback');
+        const feedbackText = document.getElementById('feedback-text');
+        
+        if (correct) {
+          AudioManager.play('success');
+          feedbackText.textContent = '🎉 正确！+30分';
+          feedbackText.className = 'text-2xl font-bold p-4 rounded-lg bg-green-100 text-green-800';
+          GameEngine.updateScore(30);
+        } else {
+          AudioManager.play('error');
+          feedbackText.textContent = '❌ 错误！-15分';
+          feedbackText.className = 'text-2xl font-bold p-4 rounded-lg bg-red-100 text-red-800';
+          GameEngine.updateScore(-15);
+        }
+        
+        feedback.classList.remove('hidden');
+        
+        if (this.currentPuzzle < this.puzzles.length - 1) {
+          document.getElementById('next-btn').classList.remove('hidden');
+        } else {
+          setTimeout(() => this.end(), 1500);
+        }
+      },
+      
+      nextPuzzle() {
+        this.currentPuzzle++;
+        this.showPuzzle();
+      },
+      
+      end() {
+        const score = GameEngine.state.players[0].score;
+        AudioManager.play('victory');
+        alert(`🏆 逻辑推理结束！\n\n你的最终得分：${score}分\n\n${score >= 60 ? '太厉害了！逻辑大师！🧠' : score >= 30 ? '做得不错！👍' : '继续加油！💪'}`);
+        GameEngine.exitCurrentScreen();
+      }
+    });
+    
+    // 8. 新游戏：诗词飞花令（适合初中生）
+    GameLibrary.register('poetry-game', {
+      id: 'poetry-game',
+      name: '诗词飞花令',
+      icon: 'fa-feather-alt',
+      category: 'creative',
+      maxPlayers: 3,
+      duration: 60,
+      
+      keywords: ['春', '花', '月', '风', '雨', '山', '水', '云', '雪', '夜'],
+      currentKeyword: '',
+      usedPoems: [],
+      currentPlayer: 0,
+      round: 0,
+      maxRounds: 5,
+      
+      poems: {
+        '春': ['春眠不觉晓', '春风又绿江南岸', '春色满园关不住', '春江水暖鸭先知'],
+        '花': ['花开堪折直须折', '花间一壶酒', '花落知多少', '花重锦官城'],
+        '月': ['月落乌啼霜满天', '月出惊山鸟', '月是故乡明', '月上柳梢头'],
+        '风': ['风吹草低见牛羊', '风雨送春归', '风急天高猿啸哀', '风雪夜归人'],
+        '雨': ['雨打梨花深闭门', '雨过天青云破处', '雨中黄叶树', '雨歇南山积翠来'],
+        '山': ['山重水复疑无路', '山外青山楼外楼', '山寺桃花始盛开', '山气日夕佳'],
+        '水': ['水光潋滟晴方好', '水村山郭酒旗风', '水流心不竞', '水深波浪阔'],
+        '云': ['云深不知处', '云想衣裳花想容', '云横秦岭家何在', '云淡风轻近午天'],
+        '雪': ['雪拥蓝关马不前', '雪尽马蹄轻', '雪暗凋旗画', '雪却输梅一段香'],
+        '夜': ['夜来风雨声', '夜半钟声到客船', '夜阑卧听风吹雨', '夜深千帐灯']
+      },
+      
+      render() {
+        return `
+          <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-6">
+              <div class="inline-block px-6 py-3 bg-primary text-white rounded-full text-xl">
+                第 <span id="round-num">1</span> / <span id="max-rounds">5</span> 轮
+              </div>
+            </div>
+            
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-6 text-center">
+              <h3 class="text-lg text-gray-600 dark:text-gray-300 mb-4">本轮关键词：</h3>
+              <div id="keyword-display" class="text-6xl font-bold text-primary mb-4"></div>
+              <p class="text-gray-500">请说出包含这个字的诗句</p>
+            </div>
+            
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 mb-6">
+              <h3 class="text-lg font-bold mb-4">已使用的诗句：</h3>
+              <div id="used-poems" class="space-y-2"></div>
+            </div>
+            
+            <div class="text-center">
+              <div class="mb-4">
+                <span class="text-lg">轮到 <span id="current-player-name" class="font-bold text-primary"></span></span>
+              </div>
+              <input type="text" id="poem-input" 
+                     class="px-6 py-4 border-2 border-primary rounded-xl text-xl w-full max-w-lg dark:bg-gray-700 dark:border-gray-600"
+                     placeholder="输入包含关键词的诗句...">
+              <div class="mt-4 space-x-4">
+                <button onclick="Game.poetry.submitPoem()" 
+                        class="px-8 py-4 bg-primary text-white rounded-xl text-xl hover:bg-primary/90 transition">
+                  提交诗句
+                </button>
+                <button onclick="Game.poetry.skipTurn()" 
+                        class="px-6 py-4 bg-gray-200 dark:bg-gray-700 rounded-xl text-lg">
+                  跳过
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      },
+      
+      init() {
+        this.round = 0;
+        this.usedPoems = [];
+        this.currentPlayer = 0;
+        this.startRound();
+      },
+      
+      startRound() {
+        this.currentKeyword = this.keywords[Math.floor(Math.random() * this.keywords.length)];
+        document.getElementById('keyword-display').textContent = this.currentKeyword;
+        document.getElementById('round-num').textContent = this.round + 1;
+        document.getElementById('max-rounds').textContent = this.maxRounds;
+        document.getElementById('current-player-name').textContent = GameEngine.state.players[this.currentPlayer].name;
+        document.getElementById('poem-input').value = '';
+        this.updateUsedPoems();
+      },
+      
+      updateUsedPoems() {
+        const usedPoemsEl = document.getElementById('used-poems');
+        if (this.usedPoems.length === 0) {
+          usedPoemsEl.innerHTML = '<p class="text-gray-400">暂无</p>';
+        } else {
+          usedPoemsEl.innerHTML = this.usedPoems.map(poem => `
+            <div class="p-2 bg-gray-50 dark:bg-gray-700 rounded">${poem}</div>
+          `).join('');
+        }
+      },
+      
+      submitPoem() {
+        const input = document.getElementById('poem-input');
+        const poem = input.value.trim();
+        
+        if (!poem) {
+          alert('请输入诗句！');
+          return;
+        }
+        
+        if (!poem.includes(this.currentKeyword)) {
+          alert(`诗句中必须包含"${this.currentKeyword}"字！`);
+          return;
+        }
+        
+        if (this.usedPoems.includes(poem)) {
+          alert('这句诗已经用过了！');
+          return;
+        }
+        
+        AudioManager.play('success');
+        this.usedPoems.push(poem);
+        GameEngine.updateScore(20);
+        
+        this.currentPlayer = (this.currentPlayer + 1) % 3;
+        
+        if (this.currentPlayer === 0) {
+          this.round++;
+          if (this.round >= this.maxRounds) {
+            this.end();
+            return;
+          }
+        }
+        
+        this.startRound();
+      },
+      
+      skipTurn() {
+        this.currentPlayer = (this.currentPlayer + 1) % 3;
+        
+        if (this.currentPlayer === 0) {
+          this.round++;
+          if (this.round >= this.maxRounds) {
+            this.end();
+            return;
+          }
+        }
+        
+        this.startRound();
+      },
+      
+      end() {
+        const score = GameEngine.state.players[0].score;
+        AudioManager.play('victory');
+        alert(`🎊 诗词飞花令结束！\n\n你的最终得分：${score}分\n\n${score >= 60 ? '太厉害了！诗词达人！📚' : score >= 40 ? '做得不错！👍' : '继续加油！💪'}`);
+        GameEngine.exitCurrentScreen();
+      }
+    });
+    
+    // 全局游戏引用
+    window.Game = {
+      draw: GameLibrary.get('draw-guess'),
+      trivia: GameLibrary.get('trivia'),
+      story: GameLibrary.get('story-chain'),
+      wheel: GameLibrary.get('fortune-wheel'),
+      reaction: GameLibrary.get('reaction'),
+      memory: GameLibrary.get('memory'),
+      logic: GameLibrary.get('logic-puzzle'),
+      poetry: GameLibrary.get('poetry-game')
+    };
+    
+    // 初始化
     document.addEventListener('DOMContentLoaded', () => {
       AudioManager.init();
       GameEngine.init();
+      PetSystem.init();
       
       document.addEventListener('click', () => {
         if (AudioManager.context && AudioManager.context.state === 'suspended') {
