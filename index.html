@@ -706,7 +706,41 @@
     
     function startMultiplayerGame() {
       AudioManager.play('success');
-      alert('🎮 游戏开始！');
+      
+      // 同步房间玩家信息到游戏引擎
+      if (RoomSystem.currentRoom) {
+        GameEngine.state.players = RoomSystem.currentRoom.players.map((player, index) => ({
+          id: index + 1,
+          name: player.name,
+          score: 0,
+          avatar: index + 1,
+          isHost: player.isHost
+        }));
+      }
+      
+      // 显示游戏模式选择弹窗
+      const modal = document.createElement('div');
+      modal.id = 'game-modal';
+      modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4';
+      modal.innerHTML = `
+        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold">🎮 选择游戏模式</h2>
+            <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-300 text-2xl" aria-label="关闭">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            ${renderGameList()}
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('modal-container').appendChild(modal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
     }
     
     function interactWithPet() {
